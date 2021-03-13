@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.6.9
+# Version 1.7.0
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.6.9\n"
+    printf "\nVersion 1.7.0\n"
 
 return 0
 }
@@ -678,11 +678,21 @@ perl -0777 -pi -e 's/(<td>)([2-9])(\^)([1-9])(\$)(.*)(<\/td>)/<th rowspan="$2" c
 
 perl -0777 -pi -e 's/(<th scope="row">)([2-9])(\$ )/<th colspan="$2" scope="colgroup" id="th_#link_to_header#">/g' ./"$baseName"/"$baseName".html 
 
-perl -0777 -pi -e 's/(<th scope="row">)(\$)/<th scope="col">/' ./"$baseName"/"$baseName".html
+# New in 1.7.0 *Replaced first line with second line
+
+# perl -0777 -pi -e 's/(<th scope="row">)(\$)/<th scope="col">/' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<th scope="row">)(\$)/<th scope="col" id="th_#link_to_header#">/' ./"$baseName"/"$baseName".html
+
+#
 
 # Create the master column headers (using 1 $)
 
-perl -0777 -pi -e 's/(<td>)(1)(\$ )(.*)(<\/td>)/<th scope="col">$4<\/th>/g' ./"$baseName"/"$baseName".html
+# New in 1.7.0 *Replaced first line with second line
+
+# perl -0777 -pi -e 's/(<td>)(1)(\$ )(.*)(<\/td>)/<th scope="col">$4<\/th>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<td>)(1)(\$ )(.*)(<\/td>)/<th scope="col" id="th_#link_to_header#">$4<\/th>/g' ./"$baseName"/"$baseName".html
 
 # Create the Rowspan for top row (using NUMBER ^)
 	
@@ -774,6 +784,30 @@ perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#l
 
 perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@1)([2-9])/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
 
+# New in 1.7.0
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])(1)/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<col>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
+
+perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(1)([2-9])/<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+
 # 
 
 
@@ -810,6 +844,12 @@ perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2
 perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4$7/g' ./"$baseName"/"$baseName".html
 
 perl -0777 -pi -e 's/(<tr>.*\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4$7/g' ./"$baseName"/"$baseName".html
+
+# New in 1.7.0
+
+# Add colgroup when first cell is an empty <td> and there are four master columns in this pattern (@11111)
+
+perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@11111)/<col>\n<col>\n<col>\n<col>\n<col>\n$1$2/g' ./"$baseName"/"$baseName".html
 
 # Create the colspan groups in the head of the table (using @[2-9]1[2-9][2-9]) when the first cell has a COLSPAN
 
@@ -895,15 +935,23 @@ perl -0777 -pi -e 's/(<tr>\n)(<td>)(\@1)([2-9])/<col>\n<colgroup span="$4"><\/co
 
 perl -0777 -pi -e 's/(<tr>)(\n<th scope="row"><\/th>)/$1/g' ./"$baseName"/"$baseName".html
 
+# New in 1.7.0 Replace First Line with second line
+
 ## Add column headers (<th scope="col">...</th>) in second row when they begin with $ 
 
-perl -0777 -pi -e 's/(<td>)(\$ )(.*)(<\/td>)/<th scope="col">$3<\/th>/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(<td>)(\$ )(.*)(<\/td>)/<th scope="col">$3<\/th>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<td>)(\$ )(.*)(<\/td>)/<th scope="col" id="th_#link_to_header#">$3<\/th>/g' ./"$baseName"/"$baseName".html
+
+# New in 1.7.0 Replace First Line with Second Line
 
 # Add column headers (<th scope="col">...</th>) in first row when they begin with scope=row 
 
-perl -0777 -pi -e 's/(<th scope="row">)(\$ )(.*)(<\/th>)/<th scope="col">$3<\/th>/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(<th scope="row">)(\$ )(.*)(<\/th>)/<th scope="col">$3<\/th>/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<th scope="row">)(\$ )(.*)(<\/th>)/<th scope="col">$3<\/th>/g' ./"$baseName"/"$baseName".html
+perl -0777 -pi -e 's/(<th scope="row">)(\$ )(.*)(<\/th>)/<th scope="col" id="th_#link_to_header#">$3<\/th>/g' ./"$baseName"/"$baseName".html
+
+#
 
 # Add row headers (<th scope="row">...</th>) in second columns when they begin with ^ 
 
@@ -996,6 +1044,16 @@ perl -0777 -pi -e 's/(<\/caption>.*\n)(.*<tr>.*\n)(.*<th scope="row">)/$1<tbody>
 
 perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr class="no-row-header">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
 
+# New in 1.7.0
+
+# Add closing </thead> and opening <tbody> when they are missing from tables that have multiple column headers
+
+perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th scope="row">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th rowspan)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+
+#
+
 # Add ARIA- Label "table Footer" to the <tfoot> element
 
 sed -i 's/<tfoot>/<tfoot aria-label="Table Footer">/g' ./"$baseName"/"$baseName".html
@@ -1003,6 +1061,24 @@ sed -i 's/<tfoot>/<tfoot aria-label="Table Footer">/g' ./"$baseName"/"$baseName"
 # Make cells with 0$ be a data cell not a header cell.
 
 sed -i 's/<th scope="row"><p>0\$/<td><p>/g' ./"$baseName"/"$baseName".html
+
+# New in 1.7.0
+
+# Remove Blank in Table Row header cells
+
+sed -i 's/<th scope="row">EMPTY<\/th>/<th scope="row"><\/th>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<th scope="col" )(id="th_.*)(>EMPTY<\/th>)/$1$2><\/th>/g' ./"$baseName"/"$baseName".html
+
+# Remove empty rows if there are more than two column headers
+
+perl -0777 -pi -e 's/(<tr class="table-body-start">)(.*\n<th scope="row"><\/th>)(.*\n<\/tr>)/$1/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>.*\n)(<td>&nbsp;<\/td>.*\n)(<\/tr>.*\n)//g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr class="table-body-start">)(.*\n<tr>)/$1/g' ./"$baseName"/"$baseName".html
+
+#
 
 # Add progressive numbers to table headers
 
