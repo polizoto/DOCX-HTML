@@ -118,15 +118,15 @@ And on the line below the table caption, write:
 
 ### MS Word Tables
 #### General Information
-There are two types of tables that you may encounter in your MS Word document: simple tables and complex tables.
+There are two types of tables that you may encounter in your MS Word document: *simple* tables and *complex* tables.
 
 A simple table is a table that has no merged cells. A complex table has merged cells and there is a different number of cells in each row of the table.
 
 When you are working with simple tables, make sure that the “Header Row” checkbox is checked in the Table Style Options group of the Table Design Tab, when you insert your cursor in that table.
 
-If it is a complex table and there are multiple column headers for cells in the table, make sure that the “Header Row” checkbox is unchecked when you insert your cursor in that table. See the example of a complex table below:
+If it is a complex table and there are multiple column headers for cells in the table, make sure that the “Header Row” checkbox is unchecked when you insert your cursor in that table. See the example of [a complex table](https://www.dropbox.com/s/z87xgy61f6aa4uk/Complex%20Table%20-%20No%20Tags.docx?dl=0).
 
-Note that columns 2-4 have children columns. When using the DOCX-HTML.sh script, this table should not have the “Header Row” marked.
+Note that columns 2-4 have children columns. When using the DOCX-HTML.sh script, this table should *not* have the “Header Row” marked.
 
 #### Tags for MS Word Tables
 If your table is simple, there usually isn’t anything else that you have to do than make sure that the “Header Row” is marked.
