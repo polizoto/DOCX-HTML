@@ -1,0 +1,415 @@
+<style type="text/css">
+
+ /* Version 1.2.1 */
+  
+body {
+    color: #444;
+    font-family: AtkinsonHyperlegible;
+    font-size: 24px;
+    line-height: 1.7;
+    padding: 1em;
+    margin: auto;
+    background: #fefefe;
+    text-align: left;
+}    
+
+  		.transcriber-note-summary {
+  		box-sizing: border-box;
+  		width: 100%;
+  		max-width: 1000px;
+          display: block;
+          outline: 0;
+          background-color:  #f7e4d7; 
+		  padding: 4px 1.5em 4px 1.5em; 
+          margin: 5px 5px 5px 5px;
+        	border: 1px solid #CCCCCC;
+        	border-radius: 4px;
+  	}	
+   
+  nav {
+		box-sizing: border-box;
+		width: 100%;
+		max-width: 1000px;
+        display: block;
+        outline: 0;
+        background-color: rgb(232,232,232); 
+        margin: 5px 5px 5px 5px;
+      	border: 1px solid #CCCCCC;
+      	border-radius: 4px;
+  }
+        
+   h1 {
+    	font-family: Open Sans; 
+		width: 100%;
+		max-width: 1000px;
+    	color: #003262; 
+    	padding: 0px 0px 0px 0px; 
+    	margin: 0px 4px 10px 4px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      	font-family: Open Sans;
+      	display: block;
+      	color: #003262; 
+		width: 100%;
+		max-width: 1000px;	
+      	margin: 10px 4px 10px 4px;
+      	border-bottom: 1px solid #003262;
+      	text-decoration: none;
+          box-sizing: border-box;
+    }
+
+    h3 {
+      	font-family: Open Sans;
+      	display: block;	
+      	color: #003262;
+		width: 100%;
+		max-width: 1000px;
+      	margin: 10px 4px 10px 4px;
+      	border-bottom: 1px dotted #003262;
+      	text-decoration: none;
+          box-sizing: border-box;
+    }
+
+    h4 {
+    	font-family: Open Sans; 
+    	color: #003262; 
+    	display: block; 
+		width: 100%;
+		max-width: 1000px;
+    	margin: 10px 4px 10px 4px;
+      box-sizing: border-box;
+    }
+
+    h5 {
+    	font-family: Open Sans; 
+    	color: #003262;
+		width: 100%;
+		max-width: 1000px;
+    	margin: 10px 4px 10px 4px;
+      box-sizing: border-box;
+    }
+    
+  h6 {
+      	font-family: Open Sans;
+      	font-size: 1em;
+        	max-width: 30%;
+      	display: block;
+      	background-color: #F1F547; 
+      	border: 1px solid #CCCCCC; 
+          padding: .5em;
+          margin: 5px 5px 5px 5px;
+      	border-radius: 4px;
+          box-sizing: border-box;
+    }
+
+
+    img {
+  		max-width: 100%;
+  		height: auto;  
+    }
+    
+    aside.footnote {
+      	display: block; 
+		width: 100%;
+      	border: 1px solid #CCCCCC; 
+      	background-color: #F0F8FF; 
+      	padding: 4px 1.5em 4px 1.5em; 
+          margin: 5px 5px 5px 5px;
+          box-sizing: border-box;
+  		border-radius: 4px;
+    }
+
+    aside.complimentary {
+      	display: block; 
+		width: 100%;
+      	border: 1px solid #CCCCCC; 
+      	background-color: #FFFFE0; 
+      	padding: 4px 1.5em 4px 1.5em; 
+          margin: 5px 5px 5px 5px;
+          box-sizing: border-box;
+  		border-radius: 4px;
+    }
+      
+    aside.secondary-text {
+      	display: block; 
+		width: 100%;
+      	border: 1px solid #CCCCCC; 
+      	background-color: #FFFFE0; 
+      	padding: 4px 1.5em 4px 1.5em; 
+          margin: 5px 5px 5px 5px;
+          box-sizing: border-box;
+  		border-radius: 4px;
+      }
+	  
+  	      aside.transcriber-note{
+        	display: block; 
+  		width: 100%;
+        	border: 1px solid #CCCCCC; 
+        	background-color:  #f7e4d7; 
+        	padding: 4px 1.5em 4px 1.5em; 
+            margin: 5px 5px 5px 5px;
+            box-sizing: border-box;
+    		border-radius: 4px;
+        }
+
+    aside.line-number {
+      	display: block;
+        	max-width: 30%;
+      	border: 1px solid #CCCCCC; 
+      	background-color: #fff3f4; 
+      	padding: 4px 1.5em 4px 1.5em;
+          margin: 5px 5px 5px 5px;
+  		border-radius: 4px;
+          box-sizing: border-box;
+      }
+	  
+	  	aside.figure-footnote {
+    box-sizing: border-box;
+    font-family: AtkinsonHyperlegible;
+    font-size: 20px;
+    line-height: 1.7;
+    padding: 1em;
+    margin: auto;
+    text-align: left;
+      }
+      
+    aside h2 {
+        	font-family: Open Sans;
+        	display: block;
+        	color: #003262; 
+        	width: 100%;	
+        	margin: 10px 4px 10px 4px;
+        	border-bottom: 1px solid #003262;
+        	text-decoration: none;
+          box-sizing: border-box;
+      }
+      
+     aside h3 {
+        	font-family: Open Sans;
+        	display: block;	
+        	color: #003262;
+        	width: 100%;
+        	margin: 10px 4px 10px 4px;
+        	border-bottom: 1px dotted #003262;
+        	text-decoration: none;
+          box-sizing: border-box;
+      }
+      
+     aside figure {
+          display: block;
+        	width: 100%;
+        	border: 1px solid #CCCCCC; 
+          background-color: rgb(232,232,232); 
+          padding: 4px 1em 4px 1em;
+          margin: 10px 0px 10px 0px;
+          box-sizing: border-box;
+  		border-radius: 4px;
+      }
+
+    footer {
+		width: 100%;
+    	display: block;
+    	outline: 0;
+    	background-color: rgb(232,232,232); 
+    	padding: 4px 1.5em 4px 1.5em;
+    	border: 1px solid #CCCCCC;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    blockquote {
+      background: #f9f9f9;
+      border-left: 10px solid #ccc;
+      margin: 1.5em 10px;
+      padding: 0.5em 10px;
+      quotes: "\201C""\201D""\2018""\2019";
+      box-sizing: border-box;
+  	border-radius: 4px;
+    }
+
+    .blockquote-footer {
+      background: #f9f9f9;
+      border: none;
+      display: block;
+      font-size: 80%;
+      width: 610px;
+      box-sizing: border-box;
+      }
+
+		.table-container {
+	overflow-x: auto;
+	}	  
+	  
+    table {
+    	margin-bottom: 2em;
+    	border-bottom: 1px solid #ddd;
+    	border: 1px solid black;
+    	border-spacing: 0;
+    	border-collapse: collapse;
+    }
+
+	thead {
+    	  background-color: #eee;
+	}
+	
+    table th {
+    	  padding: .2em 1em;
+    	  background-color: #eee;
+    	  border: 1px solid black;
+    }
+
+    table td {
+    	padding: .2em 1em;
+    	border: 1px solid black;
+    	vertical-align: top;
+    }
+
+    tfoot td {
+    border: 1px solid black;
+    }
+
+table > caption {
+  font-weight: bold;
+  text-align: left; }
+
+table > caption > p {
+font-weight: bold;  
+font-size: 0.8em;
+  color: #686868;
+  font-family: SourceSansPro, sans-serif;
+  margin-top: 0px;
+  text-align: left;
+  padding: 5px 10px 5px 0px; }
+
+    figure {
+          display: block;
+		width: 100%;
+        	border: 1px solid #CCCCCC; 
+          background-color: rgb(232,232,232); 
+          padding: 4px 1em 4px 1em;
+          margin: 10px 0px 10px 0px;
+          box-sizing: border-box;
+  		border-radius: 4px;
+      }  
+
+    figcaption {
+    	font-size: 0.8em;
+    	font-style: italic;
+    	margin: 0 0 .8em;
+      box-sizing: border-box;
+    }
+
+	pre {
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-left: 3px solid #f36d33;
+    color: #666;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1.5em;
+    display: block;
+    word-wrap: break-word;
+}
+
+code {
+      background: #f4f4f4;
+	  }
+	
+    a:hover, a:focus {
+    	background-color: #FFFFE0;
+    	border: 1px solid #CCCCCC;
+    	color: red;
+    }
+      
+      a.footnote {
+      	border: 1px solid #CCCCCC;
+          padding: 1px;
+          margin: 1px;
+          background-color: #FFFFE0;
+      }
+
+      sup { 
+          vertical-align: top;
+      }
+
+	span.underline {
+		text-decoration: underline;
+	}
+	
+    span.doubleunderline{
+    	border-bottom: 3px double #000; 
+    	text-decoration: none;
+    }      
+
+    span.dashed{
+    	border-bottom: 1px dashed #000; 
+    	text-decoration: none;
+    }      
+
+    span.dotted{
+    	border-bottom: .5px dotted #000; 
+    	text-decoration: none;
+    }
+
+    .math{
+      background-color: #E7FFE7 ;
+    	display: inline-block
+      }
+
+    math {
+      background-color: #E7FFE7 ;
+    	display: inline-block
+      }
+
+    span.language {
+    	background-color: #E6E6FA ;
+      }
+     
+    p.language{
+    	background-color: #E6E6FA ;
+    }
+
+    blockquote.language{
+    	background-color: #E6E6FA ;
+    }
+
+    h2.language{
+    	background-color: #E6E6FA ;
+    } 
+
+    h3.language{
+    	background-color: #E6E6FA ;
+    }
+
+@media only screen and (min-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    filter: none !important;
+    -ms-filter: none !important;
+  }
+
+  body {
+    font-size: 12pt;
+    max-width: 100%;
+    text-align: left;
+  }
+} 
+ </style>
