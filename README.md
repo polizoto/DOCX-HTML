@@ -15,6 +15,12 @@ Create Accessible HTML Files From DOCX
 4. Download and unpack the NuHTML Windows Zip folder to your `C:\` drive (PC) or place the the vnu.jar file in your Home directory `~/` (Mac)
 5. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
 
+## Features
+- Table of contents (Headings 1-3)
+- Language switches
+- `<aside>` element for secondary text and footnote regions
+- `<details>` element for extended descriptions
+
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
 
