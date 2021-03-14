@@ -8,6 +8,12 @@ Create Accessible HTML Files From DOCX
 - CSS Stylesheet
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm)
 
+## Setup
+1. Download the DOCX-HTML.sh script to your macOS or PC computer
+2. Place the script in an easy-to-locate folder (C:\scripts\)
+3. Create a "stylesheets" folder in your `C:\` drive (PC) or in your Home directory `~/` (Mac); Name your default stylesheet "standard.css"
+4. Download and unpack the NuHTML Windows Zip fodler to your `C:\` drive (PC) or place the the vnu.jar file in your Home directory `~/` (Mac)
+
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
 
