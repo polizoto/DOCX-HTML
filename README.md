@@ -43,7 +43,7 @@ In addition to these elements, there are some HTML accessibility features that a
 
 ### MS Word Tags
 
-For a complete list of the tags that are recognized by the DOCX-HTML.sh script, see the [MS Word Tags document](https://www.dropbox.com/s/my4kue1ski9zk0n/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). This document explains how each of the tags should be used in your MS Word document.
+For a complete list of the tags that are recognized by the DOCX-HTML.sh script, see the [MS Word Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). This document explains how each of the tags should be used in your MS Word document.
 
 We will give a few examples of the most common tags below:
 
@@ -133,7 +133,7 @@ If your table is simple, there usually isn’t anything else that you have to do
 
 If your table is complex, however, you will need to add tags to the table to ensure that the table will be processed correctly by the DOC-HTML.sh script. Otherwise, you will need to do heavy editing of the HTML document in an HTML editor (e.g., Dreamweaver), which can significantly increase the amount of time you spend converting the document. 
 
-For an extended explanation of how to use MS Word tags in tables for use with the DOCX-HTML.sh script, see the [MS Word Tags document](https://www.dropbox.com/s/my4kue1ski9zk0n/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). 
+For an extended explanation of how to use MS Word tags in tables for use with the DOCX-HTML.sh script, see the [MS Word Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). 
 
 We will give a few examples of common MS Word tags for tables below:
 
@@ -146,7 +146,7 @@ With the rest of the cells in the first row of this table, we again use tags to 
 
 In the second row of the table, we also use the $ tag to indicate that these cells are column headers. We do not use a number next to them because they are not parent column headers.
 
-For more information about complex tables with parent column headers, see the [MS Word Tags document](https://www.dropbox.com/s/my4kue1ski9zk0n/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). 
+For more information about complex tables with parent column headers, see the [MS Word Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0). 
 
 ##### Row Headers
 
