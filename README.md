@@ -58,7 +58,7 @@ And enter the following tag after the foreign language text:
 
 `%%%`
 
-Note: These tags should be used in-line with text in your document. If there is more than one foreign language, use `###2` and `###3` before the second and  third foreign languages, respectively, and use the same ending tag (`%%%`) at the end of these passages. The DOCX-HTML.sh script can process up to nine foreign languages in your MS Word document.
+**Note:** These tags should be used in-line with text in your document. If there is more than one foreign language, use `###2` and `###3` before the second and  third foreign languages, respectively, and use the same ending tag (`%%%`) at the end of these passages. The DOCX-HTML.sh script can process up to nine foreign languages in your MS Word document.
 
 #### Figure Captions
 A figure caption is text that identifies an image. It is text that normally appears immediately before or after the image which help readers understand what the image is about. 
@@ -82,7 +82,7 @@ And on the line below the extended description, write:
 
 `Description End.`
 
-Note: Extended descriptions must come immediately after the image in the MS Word document for the DOCX-HTML.sh script to process the Description Begin: … Description End. tags successfully.
+**Note:** Extended descriptions must come immediately after the image in the MS Word document for the DOCX-HTML.sh script to process the Description Begin: … Description End. tags successfully.
 
 #### Table Captions
 A table caption is text that identifies a table. It is text that normally appears immediately before or after the table. 
@@ -95,7 +95,7 @@ And on the line below the table caption, write:
 
 `Caption End.`
 
-Note: Table captions must come immediately before the table in the MS Word document for the DOCX-HTML.sh script to process the Caption Begin: … Caption End. tags successfully.
+**Note:** Table captions must come immediately before the table in the MS Word document for the DOCX-HTML.sh script to process the Caption Begin: … Caption End. tags successfully.
 
 ### MS Word Tables
 #### General Information
@@ -121,7 +121,7 @@ We will give a few examples of common MS Word tags for tables below:
 ##### Column Headers
 When a cell in the first row of your table has multiple columns underneath it, we call this cell a “parent column header”. The cell is the parent of “children columns”. With this type of table, you will need to add tags so that the DOCX-HTML.sh script can determine the number of parent column headers and children columns correctly. See the example below::
 
-In the first cell of this table, the tag begins with the number of children columns for this cell. There is only one column beneath this cell so we insert the number 1. Next we indicate that this cell is a column header by using $. Next we use the `@` symbol followed by the number of children columns of each parent column header (`12`2) for the entire table. 
+In the first cell of this table, the tag begins with the number of children columns for this cell. There is only one column beneath this cell so we insert the number 1. Next we indicate that this cell is a column header by using `$`. Next we use the `@` symbol followed by the number of children columns of each parent column header (`122`) for the entire table. 
 
 With the rest of the cells in the first row of this table, we again use tags to indicate the number of children columns underneath the cells (`2`) and to indicate that these cells are column header cells (`$`)
 
