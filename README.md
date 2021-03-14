@@ -9,7 +9,7 @@ Create Accessible HTML Files From DOCX
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
 ## Setup
-1. Download the DOCX-HTML.sh script to your macOS or PC
+1. Download the DOCX-HTML.sh script to your [macOS]() or [PC](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML.sh)
 2. Place the script in an easy-to-locate folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
 3. Create a "stylesheets" folder in your `C:\stylesheets\` drive (PC) or in your Home directory `~/stylesheets/` (Mac); Name your default stylesheet "standard.css"
 4. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
