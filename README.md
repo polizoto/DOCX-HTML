@@ -6,7 +6,7 @@ Create Accessible HTML Files From DOCX
 - [Pandoc](https://pandoc.org/installing.html)
 - [NuHTML Checker](https://github.com/validator/validator/releases/tag/20.6.30)
 - CSS Stylesheet
-- [Tasklist.exe](https://www.computerhope.com/download/winxp.htm)(PC only)
+- [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
 ## Setup
 1. Download the DOCX-HTML.sh script to your macOS or PC
