@@ -4,8 +4,8 @@ Create Accessible HTML Files From DOCX
 ## Requirements
 - [Git for Windows](https://git-scm.com/download/win) 
 - [Pandoc](https://pandoc.org/installing.html)
-- [NuHTML Checker for PC](https://github.com/validator/validator/releases/download/20.6.30/vnu.windows.zip) OR [NHTML Checker for macOS](https://github.com/validator/validator/releases/download/20.6.30/vnu.jar_20.6.30.zip)
-- CSS Stylesheet
+- [NuHTML Checker for PC](https://github.com/validator/validator/releases/download/20.6.30/vnu.windows.zip) OR [NuHTML Checker for macOS](https://github.com/validator/validator/releases/download/20.6.30/vnu.jar_20.6.30.zip)
+- [CSS Stylesheet](https://github.com/polizoto/DOCX-HTML/blob/main/stylesheets/standard.css)
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
 ## Setup
