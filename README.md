@@ -11,8 +11,8 @@ Create Accessible HTML Files From DOCX
 ## Setup
 1. Download the DOCX-HTML.sh script to your macOS or PC
 2. Place the script in an easy-to-locate folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
-3. Create a "stylesheets" folder in your `C:\` drive (PC) or in your Home directory `~/` (Mac); Name your default stylesheet "standard.css"
-4. Download and unpack the NuHTML Windows Zip folder to your `C:\` drive (PC) or place the the vnu.jar file in your Home directory `~/` (Mac)
+3. Create a "stylesheets" folder in your `C:\stylesheets\` drive (PC) or in your Home directory `~/stylesheets/` (Mac); Name your default stylesheet "standard.css"
+4. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
 5. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
 
 ## Features
@@ -155,7 +155,7 @@ When a cell in the left column of your table multiple rows to the right of it, w
 
 See the example of a complex table + row headers - with tags.
 
-In each of the "parent row header" cells in this table, we use tags to indicate the number of children rows (`3`))to the right of the cells and to indicate that these cells are row header cells (`^`).
+In each of the "parent row header" cells in this table, we use tags to indicate the number of children rows (`3`) to the right of the cells and to indicate that these cells are row header cells (`^`).
 
 In the second column of the table, we also use the `^` tag to indicate that these cells are row headers. We do not use a number next to them because they are not parent row headers.
 
