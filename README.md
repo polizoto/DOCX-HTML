@@ -138,7 +138,7 @@ For an extended explanation of how to use MS Word tags in tables for use with th
 We will give a few examples of common MS Word tags for tables below:
 
 ##### Column Headers
-When a cell in the first row of your table has multiple columns underneath it, we call this cell a “parent column header”. The cell is the parent of “children columns”. With this type of table, you will need to add tags so that the DOCX-HTML.sh script can determine the number of parent column headers and children columns correctly. See the example below::
+When a cell in the first row of your table has multiple columns underneath it, we call this cell a “parent column header”. The cell is the parent of “children columns”. With this type of table, you will need to add tags so that the DOCX-HTML.sh script can determine the number of parent column headers and children columns correctly. See the [complex table - with tags example](https://www.dropbox.com/s/ue8z3krj0qtkk8z/Complex%20Table%20-%20With%20Tags.docx?dl=0)
 
 In the first cell of this table, the tag begins with the number of children columns for this cell. There is only one column beneath this cell so we insert the number 1. Next we indicate that this cell is a column header by using `$`. Next we use the `@` symbol followed by the number of children columns of each parent column header (`122`) for the entire table. 
 
