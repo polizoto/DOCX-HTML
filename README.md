@@ -9,10 +9,10 @@ Create Accessible HTML Files From DOCX
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm)
 
 ## Setup
-1. Download the DOCX-HTML.sh script to your macOS or PC computer
+1. Download the DOCX-HTML.sh script to your macOS or PC
 2. Place the script in an easy-to-locate folder (C:\scripts\)
 3. Create a "stylesheets" folder in your `C:\` drive (PC) or in your Home directory `~/` (Mac); Name your default stylesheet "standard.css"
-4. Download and unpack the NuHTML Windows Zip fodler to your `C:\` drive (PC) or place the the vnu.jar file in your Home directory `~/` (Mac)
+4. Download and unpack the NuHTML Windows Zip folder to your `C:\` drive (PC) or place the the vnu.jar file in your Home directory `~/` (Mac)
 
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
@@ -36,7 +36,7 @@ We will give a few examples of the most common tags below:
 
 #### Secondary Text
 
-When there is text in a document that is not essential to the main content (e.g., a sidebar), this is “secondary text”. On the line above secondary text, enter the following tag in your MS Word document: 
+When there is text in a document that is not essential to the main content (e.g., a sidebar), this is “secondary text”. On the line above secondary text, enter the following tag: 
 
 `Secondary Text Begin:`
 
@@ -45,7 +45,7 @@ And on the line below secondary text, enter:
 `Secondary Text End.`
 
 #### Footnote Text
-If there are footnotes in your document, make sure that these have superscript formatting. For the footnote references (on the bottom of each page OR at the end of the document) use the following tag above the footnote text regions in your MS Word document:
+If there are footnotes in your document, make sure that these have superscript formatting. For the footnote references (on the bottom of each page OR at the end of the document) use the following tag above the footnote text region:
 
 `Footnote Begin:`
 
@@ -69,7 +69,7 @@ And enter the following tag after the foreign language text:
 #### Figure Captions
 A figure caption is text that identifies an image. It is text that normally appears immediately before or after the image which help readers understand what the image is about. 
 
-Write the following tag before figure caption in your MS Word document:
+Write the following tag before figure caption:
 
 `Figcaption Begin:`
 
@@ -80,7 +80,7 @@ And on the line below the figure caption text, enter:
 #### Extended Descriptions
 If there are complex images in the document, write an extended description. Keep the alt text for this image short (What does it show?) and write “description to follow.” at the end of the alt text. 
 
-Write your extended description and then add the following tag above the descriptiont:
+Write your extended description and then add the following tag above the description:
 
 `Description Begin:`
 
