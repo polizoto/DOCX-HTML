@@ -194,25 +194,21 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 **Note:** When using the `-l` flag, you must enter the [ISO language code](https://www.loc.gov/standards/iso639-2/php/code_list.php) for the secondary language(s). Use the `-l` option before each ISO language code if there are multiple secondary languages. For example, `'/c/scripts/DOCX-HTML.sh' -l it -l es`. In this example, there are two secondary languages, Italian (`it`) and Spanish (`es`). These are marked with `###1` and `###2`, respectively, in the MS Word document. See the [MS WORD Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0) for more information about usage.
 
-### Example 2: Tables
-
-[Tables.docx]() | [Tables.html]()
-
-### Example 3: Complex Tables and Extended Descriptions
+### Example 2: Complex Tables and Extended Descriptions
 
 [Complex_tables.docx](https://www.dropbox.com/s/o4xjqqom0kps4p1/Complex_tables.docx?dl=0) | [Complex_tables.html](https://www.dropbox.com/s/7q3xayarh1mtgi0/Complex_tables.html?dl=0)
 
-### Example 4: Footnote Text Regions (using the `-f` option for adding footnotes)
+### Example 3: Footnote Text Regions (using the `-f` option for adding footnotes)
 
-[Secondary+Footnote.docx]() | [Secondary+Footnote.html]()
+[Footnote.docx](https://www.dropbox.com/s/t4uayrlj416fp8u/Foonote.docx?dl=0) | [Footnote.html](https://www.dropbox.com/s/ss28xlr4amgla7f/Footnote.html?dl=0)
 
 **Note:** Footnotes must be superscripted in the text. They also must have a footnote reference.
 
-### Example 5: Line Numbers (using the `-n` flag)
+### Example 4: Line Numbers (using the `-n` flag)
 
 [Line_Numbers.docx](https://www.dropbox.com/s/ppiaomhdyswv4ea/Line_Numbers.docx?dl=0) | [Line_Numbers.html](https://www.dropbox.com/s/1phyt3kciueorw6/Line_Numbers.html?dl=0)
 
-### Example 6: Mathematical Content
+### Example 5: Mathematical Content
 
 [Math_test.docx](https://www.dropbox.com/s/mmd1htycv8e1zyd/Math_test.docx?dl=0) | [Math_test.html](https://www.dropbox.com/s/aeuw0xw0eyzkt8x/Math_test.html?dl=0)
 
