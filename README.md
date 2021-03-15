@@ -8,6 +8,9 @@ Create Accessible HTML Files From DOCX
 - [CSS Stylesheet](https://github.com/polizoto/DOCX-HTML/blob/main/stylesheets/standard.css)
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
+## Optional
+[VIM](https://www.vim.org/download.php)(for use with `-e` flag only; if you want to go to errors edit the HTML files in the terminal directly)
+
 ## Setup
 1. Download the DOCX-HTML.sh script to your [macOS](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML_mac.sh) or [PC](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML.sh)
 2. Place the script in an easy-to-locate folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
@@ -174,7 +177,7 @@ To use the script, follow these instructions:
 
 1. Place the DOCX file(s) into a folder (e.g., "HTML Projects")
 2. If you are on a PC, right click in the folder and select "Git Bash Here"; if you are on a macOS, open the terminal and change directories to the folder with the DOCX file(s).
-3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for PC). *Note:* on a macOS you will first need to use `chmod + x /scripts/DOCX-HTML_mac.sh` to make the script executable.
+3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for macOS). *Note:* on a macOS you will first need to use `chmod + x /scripts/DOCX-HTML_mac.sh` to make the script executable.
 4. Press ENTER to run the script on the DOCX file(s) in your current working directory. 
 5. View the terminal output for any warnings or errors. The HTML files will be output to a folder with the same name as the DOCX in the current working directory. 
 6. OPTIONAL use an option at runtime (see the help menu, `-h`, for more information)
