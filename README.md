@@ -20,15 +20,15 @@ Create Accessible HTML Files From DOCX
 
 ## Features
 - Table of contents (Headings 1-3)
-- Language switches are automatically added (`lang` attribute). Up to nine secondary languages
+- language switches are automatically added (`lang` attribute) when using the `-l` option. Up to nine secondary languages
 - table accessibility markup is automatically added (e.g., `colspan`, `rowspan`, `scope` attributes) when MS Word Tags are used
-- math output options (mathjax, mathml, webtex, SVG)
+- math output options (mathjax, mathml, webtex, SVG). Mathjax is default. Use `-m` option for other targets
 - hyperlinks for footnotes (automatically added with the -f option)
-- `<aside>` element for lines numbers (poetry)
+- `<aside>` element for lines numbers (poetry) when using the `-n` option
 - `<aside>` element for secondary text and footnote regions
 - `<details>` element for extended descriptions
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
-- edit HTML directly with VIM in the terminal (when using the -e option)
+- edit HTML directly with VIM in the terminal (when using the `-e` option)
 
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
