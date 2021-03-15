@@ -189,6 +189,8 @@ To use the script, follow these instructions:
 
 **Note:** on a macOS you will first need to use `chmod + x /scripts/DOCX-HTML_mac.sh` to make the script executable.
 
+![DOCX-HTML Help Menu](https://github.com/polizoto/DOCX-HTML/blob/main/Screenshots/DOCX-HTML%20Help%20Menu.png)
+
 ## Sample Files
 
 See the following documents for examples of DOCX files with "MS Word tags" and their HTML versions.
