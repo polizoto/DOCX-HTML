@@ -198,11 +198,11 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 [Tables.docx]() | [Tables.html]()
 
-### Example 3: Complex Tables
+### Example 3: Complex Tables and Extended Descriptions
 
-[Complex_tables.docx]() | [Complex_tables.html]()
+[Complex_tables.docx](https://www.dropbox.com/s/o4xjqqom0kps4p1/Complex_tables.docx?dl=0) | [Complex_tables.html](https://www.dropbox.com/s/7q3xayarh1mtgi0/Complex_tables.html?dl=0)
 
-### Example 4: Secondary Text and Footnote Text Regions (using the `-f` option for adding footnotes)
+### Example 4: Footnote Text Regions (using the `-f` option for adding footnotes)
 
 [Secondary+Footnote.docx]() | [Secondary+Footnote.html]()
 
@@ -217,7 +217,3 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 [Math_test.docx](https://www.dropbox.com/s/mmd1htycv8e1zyd/Math_test.docx?dl=0) | [Math_test.html](https://www.dropbox.com/s/aeuw0xw0eyzkt8x/Math_test.html?dl=0)
 
 **Note**: the DOCX-HTML.sh script processes mathematical content that is in OMML (Open Math Markup Language) *only*. MathType equations are not supported. See [GrindEQ's MathType to Equation tool](https://www.grindeq.com/index.php?p=download&lang=en) for converting MathType equations to MS Word Equations (OMML)
-
-### Example 7: Extended Descriptions
-
-[Extended_Descriptions.docx]() | [Extended_Descriptions.html]()
