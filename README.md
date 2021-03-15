@@ -153,7 +153,7 @@ For more information about complex tables with parent column headers, see the [M
 ##### Row Headers
 When a cell in the left column of your table multiple rows to the right of it, we can this cell a "a parent row header". The cell is the parent of "children rows". With this type of table you will also need to add tags so that the DOCX-HTML.sh script can determine the number of parent row headers and children rows correctly.
 
-See the example of a complex table + row headers - with tags.
+See the example of a [complex table + row headers - with tags](https://www.dropbox.com/s/qbbokkkeijx4e7d/Complex%20Table%20%2B%20Parent%20Row%20Headers%20-%20With%20Tags.docx?dl=0).
 
 In each of the "parent row header" cells in this table, we use tags to indicate the number of children rows (`3`) to the right of the cells and to indicate that these cells are row header cells (`^`).
 
