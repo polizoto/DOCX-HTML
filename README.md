@@ -34,7 +34,10 @@ Create Accessible HTML Files From DOCX
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
 
-This ReadMe has two parts: 1) how to structure your MS Word document for use with the DOCX-HTML.sh script and 2) how to run the DOCX-HTML.sh script.
+This ReadMe has three parts: 
+1. How to structure your MS Word document for use with the DOCX-HTML.sh script and
+2. How to run the DOCX-HTML.sh script.
+3. Further Resources
 
 ## Getting Started
 Before using the DOCX-HTML.sh script, it is important to make sure that the MS Word document you are converting contains the following features:
@@ -228,7 +231,7 @@ See the following links to the presentation and video tutorials from our worksho
 - [Accessing Higher Ground 2020 - Video Tutorials - Video 3](https://www.dropbox.com/s/vzam2sy3914dmbp/02%20Task%202%20-%20Using%20WAVE%20-%20Open%20Captions.mp4?dl=0)
 - [Accessing Higher Ground 2020 - Video Tutorials - Video 4](https://www.dropbox.com/s/lj6kpziiyat6jse/03%20Task%203%20-%20Adding%20Tags%20to%20DOCX%20Files%20-%20Open%20Captions.mp4?dl=0)
 
-**Note:**The current version of DOCX-HTML.sh script is slightly different than the version used at the AHG conference. There is now a version for the macOS as well.
+**Note:** The current version of DOCX-HTML.sh script is slightly different than the version used at the AHG conference. There is now a version for the macOS as well.
 
 ### Validate-HTML Script
 
