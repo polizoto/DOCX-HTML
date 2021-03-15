@@ -1,7 +1,7 @@
 # DOCX-HTML
 Create Accessible HTML Files From DOCX
 
-![DOCX-HTML Script Usage]()
+![DOCX-HTML Script Usage](https://github.com/polizoto/DOCX-HTML/blob/main/Screenshots/DOCX-HTML%20Script%20Usage.png)
 
 ## Requirements
 - [Git for Windows](https://git-scm.com/download/win) (PC only) - We recommend these [general installation instructions for Git for Windows](https://phoenixnap.com/kb/how-to-install-git-windows)
