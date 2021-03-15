@@ -183,7 +183,8 @@ To use the script, follow these instructions:
 
 1. Place the DOCX file(s) into a folder (e.g., "HTML Projects")
 2. If you are on a PC, right click in the folder and select "Git Bash Here"; if you are on a macOS, open the terminal and change directories to the folder with the DOCX file(s).
-3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for macOS).\[OPTIONAL\] use an option at runtime (see the help menu, `-h`, for more information)
+3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for macOS). 
+\[OPTIONAL\] use an option at runtime (see the help menu, `-h`, for more information)
 4. Press ENTER to run the script on the DOCX file(s) in your current working directory. 
 5. View the terminal output for any warnings or errors. The HTML files will be output to a folder with the same name as the DOCX in the current working directory. 
 
