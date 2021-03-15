@@ -215,3 +215,26 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 [Math_test.docx](https://www.dropbox.com/s/mmd1htycv8e1zyd/Math_test.docx?dl=0) | [Math_test.html](https://www.dropbox.com/s/aeuw0xw0eyzkt8x/Math_test.html?dl=0)
 
 **Note**: the DOCX-HTML.sh script processes mathematical content that is in OMML (Open Math Markup Language) *only*. MathType equations are not supported. See [GrindEQ's MathType to Equation tool](https://www.grindeq.com/index.php?p=download&lang=en) for converting MathType equations to MS Word Equations (OMML)
+
+## More Resources
+
+### AHG Conference - 2020
+
+See the following links to the presentation and video tutorials from our workshop "Accessible HTML – Why It’s a Good Format for your Students and How to Create It!" delivered on November 17, 2021 at the [Accessing Higher Ground Conference - 2020](https://accessinghigherground.org/accessible-html-why-its-a-good-format-for-your-students-and-how-to-create-it/):
+
+[Accessing Higher Ground 2020 - Presentation](https://www.dropbox.com/s/yrbzebr9fwjntl6/Accessible%20HTML%20-%20AHG%202020.pptx?dl=0)
+[Accessing Higher Ground 2020 - Video Tutorials - Video 1](https://www.dropbox.com/s/16p5mi3as24wvr6/00%20Accessible%20HTML%20Setup%20-%20Open%20Captions.mp4?dl=0)
+[Accessing Higher Ground 2020 - Video Tutorials - Video 2](https://www.dropbox.com/s/bm3zothytudhl32/01%20Task%201%20-%20Create%20An%20HTML%20File%20-%20Open%20Captions.mp4?dl=0)
+[Accessing Higher Ground 2020 - Video Tutorials - Video 3](https://www.dropbox.com/s/vzam2sy3914dmbp/02%20Task%202%20-%20Using%20WAVE%20-%20Open%20Captions.mp4?dl=0)
+[Accessing Higher Ground 2020 - Video Tutorials - Video 4](https://www.dropbox.com/s/lj6kpziiyat6jse/03%20Task%203%20-%20Adding%20Tags%20to%20DOCX%20Files%20-%20Open%20Captions.mp4?dl=0)
+
+**Note:**The current version of DOCX-HTML.sh script is slightly different than the version used at the AHG conference. There is now a version for the macOS as well.
+
+### Validate-HTML Script
+
+- If you would like to run the NuHTML validator after creating an HTML file(s), you can use the Validate-HTML script (for PC):
+
+[Validate-HTML.sh](https://www.dropbox.com/s/gt687u0dd55gk43/Validate-HTML.sh?dl=0) (for PC only)
+
+macOS version forthcoming...
+
