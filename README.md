@@ -214,7 +214,7 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 ### Example 6: Mathematical Content
 
-[Math_test.docx]() | [Math_test.html]()
+[Math_test.docx](https://www.dropbox.com/s/mmd1htycv8e1zyd/Math_test.docx?dl=0) | [Math_test.html](https://www.dropbox.com/s/aeuw0xw0eyzkt8x/Math_test.html?dl=0)
 
 **Note**: the DOCX-HTML.sh script processes mathematical content that is in OMML (Open Math Markup Language) *only*. MathType equations are not supported. See [GrindEQ's MathType to Equation tool](https://www.grindeq.com/index.php?p=download&lang=en) for converting MathType equations to MS Word Equations (OMML)
 
