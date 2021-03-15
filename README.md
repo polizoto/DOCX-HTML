@@ -161,4 +161,11 @@ In the second column of the table, we also use the `^` tag to indicate that thes
 
 For more information about complex tables with parent row headers, see the [MS Word Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0).
 
+### VBA Macros for MS Word Tags
+To speed up the process of adding "tags" to your MS Word document, you can use VBA macros + your own keyboard shortcuts. 
+
+See [VBA Macros - MS Word Tags](https://www.dropbox.com/s/d2h1da3wjbv7ngu/VBA%20Macros%20-%20MS%20Word%20Tags.txt?dl=0)
+
+**Note**: MS Word Tags are case sensitive and must have any formatting such as styles, bold, italics, or superscripts applied to them.
+
 ## Script Usage
