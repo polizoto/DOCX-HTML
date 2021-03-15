@@ -190,7 +190,7 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 ### Example 1: Multiple Languages (using the `-l` flag)
 
-[Languages.docx](https://www.dropbox.com/s/18sfq3odvrxzh37/Languages.html?dl=0) | [Languages.html](https://www.dropbox.com/s/18sfq3odvrxzh37/Languages.html?dl=0)
+[Languages.docx](https://www.dropbox.com/s/vdnx0l76b8ljbhh/Languages.docx?dl=0) | [Languages.html](https://www.dropbox.com/s/18sfq3odvrxzh37/Languages.html?dl=0)
 
 **Note:** When using the `-l` flag, you must enter the [ISO language code](https://www.loc.gov/standards/iso639-2/php/code_list.php) for the secondary language(s). Use the `-l` option before each ISO language code if there are multiple secondary languages. For example, `'/c/scripts/DOCX-HTML.sh' -l it -l fr`. In this example, there are two secondary languages, Italian (`it`) and French (`fr`). These are marked with `###1` and `###2`, respectively, in the MS Word document. See the [MS WORD Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0) for more information about usage.
 
