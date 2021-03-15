@@ -29,6 +29,7 @@ Create Accessible HTML Files From DOCX
 - `<details>` element for extended descriptions
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
 - edit HTML directly with VIM in the terminal (when using the `-e` option)
+- batch processing
 
 ## Overview
 DOCX-HTML.sh is a bash script that converts DOCX files to HTML (web) format. The script performs numerous find and replace operations on an HTML file to ensure that the file is fully accessible to students using assistive technologies. 
