@@ -202,13 +202,15 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 [Complex_tables.docx]() | [Complex_tables.html]()
 
-### Example 4: Secondary Text and Footnote Text Regions
+### Example 4: Secondary Text and Footnote Text Regions (using the `-f` option for adding footnotes)
 
 [Secondary+Footnote.docx]() | [Secondary+Footnote.html]()
 
+**Note:** Footnotes must be superscripted in the text. They also must have a footnote reference.
+
 ### Example 5: Line Numbers (using the `-n` flag)
 
-[Line_Numbers.docx]() | [Line_Numbers.html]()
+[Line_Numbers.docx](https://www.dropbox.com/s/ppiaomhdyswv4ea/Line_Numbers.docx?dl=0) | [Line_Numbers.html](https://www.dropbox.com/s/1phyt3kciueorw6/Line_Numbers.html?dl=0)
 
 ### Example 6: Mathematical Content
 
