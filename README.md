@@ -177,7 +177,44 @@ To use the script, follow these instructions:
 
 1. Place the DOCX file(s) into a folder (e.g., "HTML Projects")
 2. If you are on a PC, right click in the folder and select "Git Bash Here"; if you are on a macOS, open the terminal and change directories to the folder with the DOCX file(s).
-3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for macOS). *Note:* on a macOS you will first need to use `chmod + x /scripts/DOCX-HTML_mac.sh` to make the script executable.
-4. Press ENTER to run the script on the DOCX file(s) in your current working directory. 
-5. View the terminal output for any warnings or errors. The HTML files will be output to a folder with the same name as the DOCX in the current working directory. 
-6. OPTIONAL use an option at runtime (see the help menu, `-h`, for more information)
+3. In the terminal window, type the path to the script: `'/c/scripts/DOCX-HTML.sh'` (for PC) or `/scripts/DOCX-HTML_mac.sh` (for macOS). 
+4. **Note:** on a macOS you will first need to use `chmod + x /scripts/DOCX-HTML_mac.sh` to make the script executable.
+5. Press ENTER to run the script on the DOCX file(s) in your current working directory. 
+6. View the terminal output for any warnings or errors. The HTML files will be output to a folder with the same name as the DOCX in the current working directory. 
+7. OPTIONAL use an option at runtime (see the help menu, `-h`, for more information)
+
+## Sample Files
+
+See the following documents for examples of DOCX files with "MS Word tags" and their HTML versions.
+
+### Example 1: Multiple Languages (using the `-l` flag)
+
+[Languages.docx] | [Languages.html]
+
+**Note:** When using the `-l` flag, you must enter the two-digit [ISO language code](https://www.loc.gov/standards/iso639-2/php/code_list.php)  for the secondary language(s). Use the `-l` option before each ISO language code if there are multiple secondary languages. For example, `'/c/scripts/DOCX-HTML.sh' -l it -l es`. In this example, there are two secondary languages, Italian (`it`) and Spanish (`es`). These are marked with `###1` and `###2`, respectively, in the MS Word document. See the [MS WORD Tags document](https://www.dropbox.com/s/lhogh996v2itfzq/MS%20Word%20Tags-DOCX-HTML.docx?dl=0) for more information about usage.
+
+### Example 2: Tables
+
+[Tables.docx]() | [Tables.html]()
+
+### Example 3: Complex Tables
+
+[Complex_tables.docx]() | [Complex_tables.html]()
+
+### Example 4: Secondary Text and Footnote Text Regions
+
+[Secondary+Footnote.docx]() | [Secondary+Footnote.html]()
+
+### Example 5: Line Numbers (using the `-n` flag)
+
+[Line_Numbers.docx]() | [Line_Numbers.html]()
+
+### Example 6: Mathematical Content
+
+[Math_test.docx]() | [Math_test.html]()
+
+**Note**: the DOCX-HTML.sh script processes mathematical content that is in OMML (Open Math Markup Language) *only*. MathType equations are not supported. See [GrindEQ's MathType to Word tool](https://www.grindeq.com/index.php?p=download&lang=en) for converting MathType equations to MS Word Equations (OMML)
+
+### Example 7: Extended Descriptions
+
+[Extended_Descriptions.docx]() | [Extended_Descriptions.html]()
