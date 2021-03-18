@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.0
+# Version 1.7.0.3
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.0\n"
+    printf "\nVersion 1.7.0.3\n"
 
 return 0
 }
@@ -762,174 +762,36 @@ perl -0777 -pi -e 's/<td>0\$<\/td>/<td>\&nbsp;<\/td>/g' ./"$baseName"/"$baseName
 
 perl -0777 -pi -e 's/(<th scope="row">)(0)(\$)(@[0-9]+)(<\/th>)/<td>$4<\/td>/g' ./"$baseName"/"$baseName".html
 
-# Create the colspan groups in the head of the table (using @1[2-9]) when the first cell has a ROWSPAN
 
-perl -0777 -pi -e 's/(<tr>\n)(<td rowspan=")([0-9])(">)(\@1)([2-9])(<\/td>)/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4$7/g' ./"$baseName"/"$baseName".html
+## Begin Removal (1.7.0.3)
 
-# Create the colspan groups in the head of the table (using @1[2-9][2-9]) when the first cell has a ROWSPAN
 
-perl -0777 -pi -e 's/(<tr>\n)(<td rowspan=")([0-9])(">)(\@1)([2-9])([2-9])(<\/td>)/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4$8/g' ./"$baseName"/"$baseName".html
+# step 1 (Move the @ tags before the row and add the <thead> element
 
-# New in 1.6.9
+# sed -zi 's/\(<tr>\n\)\(<th .*\)\(\@[[:digit:]]\+\)/~%~\3\~\n<thead>\n<tr>\n\2/g' 
+sed -zi 's/\(<tr>\n\)\(<th .*\)\(\@[[:digit:]]\+\)/~%~\3\n<thead>\n<tr>\n\2/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@11)([2-9])([2-9])([2-9])([2-9])/<col>\n<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@111)([2-9])/<col>\n<col>\n<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+# Step 2 Add @ sign before each number in table formula
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@1)([2-9])([2-9])([2-9])([2-9])/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+sed -i '/\~%~@/s/[[:digit:]]/\@&/2g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@1)([2-9])([2-9])([2-9])/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+# Step 3 Replace the @formula with the correct table markup
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@1)([2-9])([2-9])/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(\@)([1-9])/<colgroup span="$2"><\/colgroup>\n/g'
+sed -i '/\~%~/s/\(\@\)\([[:digit:]]\)/<colgroup span="\2"><\/colgroup>\n/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@1)([2-9])/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+# Step 4 Remove Line Marker for tables
 
-# New in 1.7.0
+sed -i 's/~%~//g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+# Step 5 Remove the empty line between colgroup and <thead>
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+perl -0777 -pi -e 's/(<\/colgroup>\n)(\n)(<thead>)/$1$3/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
+#### End delete Section 1.7.0.3
 
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])(1)/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n<col>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(11)([2-9])/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" colspan="[2-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)(1)([2-9])/<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-# 
-
-
-# Create the colspan groups in the head of the table (using @11[2-9]) when the first cell has a ROWSPAN (first two colspans have 1)
-
-perl -0777 -pi -e 's/(<tr>\n)(<td rowspan=")([0-9])(">)(\@1)(1)([2-9])(<\/td>)/<col>\n<col>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4$8/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9]1) when the first cell has a ROWSPAN (first and third colspans have 1)
-
-perl -0777 -pi -e 's/(<tr>\n)(<td rowspan=")([0-9])(">)(\@1)([2-9])(1)(<\/td>)/<col>\n<colgroup span="$6"><\/colgroup>\n<col>\n$1$2$3$4$8/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9][2-9][2-9]) when the first cell has a ROWSPAN (first second and third colspans have [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])([2-9])([2-9])([2-9])(.*<\/th>)/<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$9/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9][2-9]) when the first cell has a ROWSPAN (first second and third colspans have [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])([2-9])([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4$9/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @11[2-9][2-9][2-9][2-9]) when the first cell has a ROWSPAN (first and second colspans have [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n<th rowspan=")([0-9])(" scope="rowgroup">)(\@11)([2-9])([2-9])([2-9])([2-9])(.*<\/th>)/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$9/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @11[2-9][2-9][2-9]) when the first cell has a ROWSPAN (first and second colspans have [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n<th rowspan=")([0-9])(" scope="rowgroup">)(\@11)([2-9])([2-9])([2-9])(.*<\/th>)/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$8/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9]) when the first cell has a ROWSPAN (first and second colspans have [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2$3$4$8/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9]) when the first cell has a ROWSPAN (a colspan has [2-9]) AND a word in the first cell
-
-perl -0777 -pi -e 's/(<tr>\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4$7/g' ./"$baseName"/"$baseName".html
-
-perl -0777 -pi -e 's/(<tr>.*\n)(<th rowspan=")([0-9])(" scope="rowgroup">)(\@1)([2-9])(.*<\/th>)/<col>\n<colgroup span="$6"><\/colgroup>\n$1$2$3$4$7/g' ./"$baseName"/"$baseName".html
-
-# New in 1.7.0
-
-# Add colgroup when first cell is an empty <td> and there are four master columns in this pattern (@11111)
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@11111)/<col>\n<col>\n<col>\n<col>\n<col>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @[2-9]1[2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th colspan=")([2-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n<colgroup span="$9"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @[2-9]1[2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th colspan=")([2-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])(1)([2-9])/<colgroup span="$6"><\/colgroup>\n<col>\n<colgroup span="$8"><\/colgroup>\n$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9]1) when the first cell has a COLSPAN (first and third colspans have 1)
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)([2-9])(1)/<col>\n<colgroup span="$4"><\/colgroup>\n<col>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @[2-9][2-9]1) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th colspan=")([2-9])(" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])([2-9])(1)/<colgroup span="$6">\n<colgroup span="$7"><\/colgroup>\n<col>$1$2$3$4/g' ./"$baseName"/"$baseName".html
-
-# # Create the colspan groups in the head of the table (using @11[2-9][2-9][2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)(1)([2-9])([2-9])([2-9])([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n<colgroup span="$8"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @11[2-9][2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)(1)([2-9])([2-9])([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @111[2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)(1)(1)([2-9])([2-9])/<col>\n<col>\n<col>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @11[2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)(1)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @111[2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@111)([2-9])/<col>\n<col>\n<col>\n<colgroup span="$4"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @11[2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)(1)([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9][2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)([2-9])([2-9])([2-9])([2-9])(.*)(<\/th>)/<col>\n<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n<colgroup span="$7"><\/colgroup>\n$1$2$8<\/th>/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)([2-9])([2-9])([2-9])/<col>\n<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9][2-9]) when the first cell has a COLSPAN
- 
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)([2-9])([2-9])/<col>\n<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @1[2-9]) when the first cell has a COLSPAN
- 
-perl -0777 -pi -e 's/(<tr>\n)(<th scope="col" id="th_#link_to_header#">)(\@1)([2-9])/<col>\n<colgroup span="$4"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @[2-9][2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th colspan="[0-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])([2-9])([2-9])/<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Add colgroup when first cell is an empty <td> and there are five master columns in this pattern (@111[2-9][2-9])
-
-perl -0777 -pi -e 's/(<tr>\n)(<td>)(\@111)([2-9])([2-9])(<\/td>)/<col>\n<col>\n<col>\n<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n$1$2<\/td>/g' ./"$baseName"/"$baseName".html
-
-# Create the colspan groups in the head of the table (using @[2-9][2-9]) when the first cell has a COLSPAN
-
-perl -0777 -pi -e 's/(<tr>\n)(<th colspan="[0-9]" scope="colgroup" id="th_#link_to_header#">)(\@)([2-9])([2-9])/<colgroup span="$4"><\/colgroup>\n<colgroup span="$5"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Add colgroup when first cell is an empty <td> and there are four master columns in this pattern (@11[0-9][0-9])
-
-perl -0777 -pi -e 's/(<tr>\n)(<td>)(\@1)(1)([2-9])([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n<colgroup span="$6"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Add colgroup when first cell is an empty <td> and there are three master columns in this pattern (@1[0-9][0-9])
-
-perl -0777 -pi -e 's/(<tr>\n)(<td>)(\@1)(1)([2-9])/<col>\n<col>\n<colgroup span="$5"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
-
-# Add colgroup when first cell is an empty <td> and there are master columns in this pattern (@1[2-9])
-
-perl -0777 -pi -e 's/(<tr>\n)(<td>)(\@1)([2-9])/<col>\n<colgroup span="$4"><\/colgroup>\n$1$2/g' ./"$baseName"/"$baseName".html
 
 # Delete empty first data cell in second row after first master row
 
@@ -978,15 +840,20 @@ perl -0777 -pi -e 's/<th scope="row"><ul>/<td><ul>/g' ./"$baseName"/"$baseName".
 
 sed -i 's/<li>0^ /<li>/g' ./"$baseName"/"$baseName".html
 
-#
+
+########## Begin Possible Deletion Section (1.7.0.3)
 
 # Add opening <thead> element at the beginning of first row with master columns when master columns end with closing colgroup tag <\colgroup> tag
 
-perl -0777 -pi -e 's/<\/colgroup>\n<tr>/<\/colgroup>\n<thead>\n<tr>/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/<\/colgroup>\n<tr>/<\/colgroup>\n<thead>\n<tr>/g' ./"$baseName"/"$baseName".html
 
 # Add opening <thead> element at the beginning of first row with master columns when master columns end with<col> tag
 
-perl -0777 -pi -e 's/<col>\n<tr>/<col>\n<thead>\n<tr>/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/<col>\n<tr>/<col>\n<thead>\n<tr>/g' ./"$baseName"/"$baseName".html
+
+
+######### End Possible Deletion Section (1.7.0.3)
+
 
 ## Table Footer Markup ##
 
