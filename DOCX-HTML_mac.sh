@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.1.4
+# Version 0.1.5
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.1.4\n"
+    printf "\nVersion 0.1.5\n"
 
 return 0
 }
@@ -580,17 +580,21 @@ perl -0777 -pi -e 's/<table>\n<tbody>/<table>/g' ./"$baseName"/"$baseName".html
 
 perl -0777 -pi -e 's/<\/thead>.*\n.*<tbody>.*\n.*<tr class="odd">/<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
 
+#### Adjusted in 0.1.5
+
 # Add class="table-body-start" when tables are NOT marked with header row in MS Word (table has parent columns with column headers) and previous cell begins with <td>$ (column header)
 
 # Adjusted (was missing </tr> in replace)
 
-perl -0777 -pi -e 's/(<td>\$.*\n).*<\/tr>.*\n.*<tr class="odd">/$1<\/tr>\n<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(<td>\$.*\n).*<\/tr>.*\n.*<tr class="odd">/$1<\/tr>\n<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
 
 # Adjusted (was missing </tr>) in replace)
 
-perl -0777 -pi -e 's/(<td>\$.*\n).*<\/tr>.*\n.*<tr class="even">/$1<\/tr>\n<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html 
+# perl -0777 -pi -e 's/(<td>\$.*\n).*<\/tr>.*\n.*<tr class="even">/$1<\/tr>\n<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html 
 
 # Add class="table-body-start" when tables are NOT marked with header row in MS Word (table has parent columns with column headers) and previous cell begins with <td>0$ (not a column header)
+
+#####
 
 perl -0777 -pi -e 's/(<td>0\$<\/td>.*\n).*<\/tr>.*\n.*<tr class="odd">/$1<\/tr>\n<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
 
@@ -1649,6 +1653,18 @@ sed -n 's/\(\$\$\)\(.*\)\(\$\$\)/\2/p' ./"$baseName"/"$baseName".html > ./displa
 
 sed -i '' 's/^-/ -/g' ./display-log.txt
 
+# New in 0.1.5
+
+sed -i '' 's/\\%/%/g' ./display-log.txt
+
+sed -i '' 's/\\\%/%/g' ./display-log.txt
+
+sed -i '' 's/~/ /g' ./display-log.txt
+
+# perl -pi -e 's/\\&(?!#\d+;)amp;//g' ./display-log.txt
+
+#
+
 # Insert place marker for display equatios
 
 sed -i '' 's/\(\$\$\)\(.*\)\(\$\$\)/@@ \2/g' ./"$baseName"/"$baseName".html
@@ -1725,6 +1741,24 @@ perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 fi
 
 if [ -n "$SVG" ]; then
+
+## New in 0.1.5
+
+# sed -i '' '/<p><img style=/s/\\%/%/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\\%/%/g if /<p><img/' ./"$baseName"/"$baseName".html
+
+# sed -i '' '/<p><img style=/s/\\\%/%/2g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\\\%/%/g if /<p><img/' ./"$baseName"/"$baseName".html
+
+# sed -i '' '/<p><img style=/s/~/ /2g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/~/ /g if /<p><img style/' ./"$baseName"/"$baseName".html
+
+# perl -pi -e 's/\\&(?!#\d+;)amp;//g if /<p><img/' ./"$baseName"/"$baseName".html
+
+##
 
 ## Move title="*" onto its own line
 
@@ -1842,6 +1876,35 @@ perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 sed -i '' 's/<figure> <svg/<svg/g' ./"$baseName"/"$baseName".html
 
 sed -i '' 's/<\/svg><\/figure>/<\/svg>/g' ./"$baseName"/"$baseName".html
+
+fi
+
+# New in version 0.1.5
+
+if [[ "$math" == "webtex" ]]; then 
+
+if [ ! -n "$SVG" ]; then
+
+# perl -pi -e 's/\\text{\\&(?!#\d+;)amp;}//g if /<figure>/' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\\ / /g if /<figure>/' ./"$baseName"/"$baseName".html
+
+# sed -i '' '/<p><img style=/s/\\%/%/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\\%/%/g if /<p><img style=/' ./"$baseName"/"$baseName".html
+
+# sed -i '' '/<p><img style=/s/\\\%/%/2g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\\\%/%/g if /<p><img style=/' ./"$baseName"/"$baseName".html
+
+# Replace backslash only if it is within the alt attribute
+
+perl -pi -e 's/({)(.*?)(})/$end_delim=$3; "$1" . $2=~s|~| |gr . "$end_delim"/ge' ./"$baseName"/"$baseName".html
+
+# sed -i 's/\\text/&\n/;h;y/~/ /;H;g;s/\n.*\n//' ./"$baseName"/"$baseName".html
+
+
+fi
 
 fi
 
