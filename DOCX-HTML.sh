@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.0.4
+# Version 1.7.0.5
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.0.4\n"
+    printf "\nVersion 1.7.0.5\n"
 
 return 0
 }
@@ -1718,7 +1718,31 @@ awk '
     }
     1                      
     ' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
-       
+
+### New	
+	
+sed -i '/@@/s/quotation-mark//g' ./"$baseName"/"$baseName".html	
+
+sed -i '/@@/s/slash/divided by/g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/percent-sign/percent/g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/StartFraction/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/EndFraction/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/upper/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/left-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/ comma //g' ./"$baseName"/"$baseName".html
+
+###
+	
 # Replace placeholder text
 
 sed -i -e 's/@@ //g' ./"$baseName"/"$baseName".html
@@ -1840,7 +1864,31 @@ awk '
     }
     1                      
     ' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
-       
+
+### New	
+	
+sed -i '/@@/s/quotation-mark//g' ./"$baseName"/"$baseName".html	
+
+sed -i '/@@/s/slash/divided by/g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/percent-sign/percent/g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/StartFraction/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/EndFraction/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/upper/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/left-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
+
+sed -i '/@@/s/ comma //g' ./"$baseName"/"$baseName".html
+
+###
+  
 # Replace placeholder text
 
 sed -i -e 's/@@ //g' ./"$baseName"/"$baseName".html
