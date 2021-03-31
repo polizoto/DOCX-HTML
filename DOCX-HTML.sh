@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.0.5
+# Version 1.7.0.4
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.0.5\n"
+    printf "\nVersion 1.7.0.4\n"
 
 return 0
 }
@@ -772,8 +772,10 @@ perl -0777 -pi -e 's/(<th scope="row">)(0)(\$)(@[0-9]+)(<\/th>)/<td>$4<\/td>/g' 
 
 # step 1 (Move the @ tags before the row and add the <thead> element
 
-# sed -zi 's/\(<tr>\n\)\(<th .*\)\(\@[[:digit:]]\+\)/~%~\3\~\n<thead>\n<tr>\n\2/g' 
-sed -zi 's/\(<tr>\n\)\(<th .*\)\(\@[[:digit:]]\+\)/~%~\3\n<thead>\n<tr>\n\2/g' ./"$baseName"/"$baseName".html
+# Only one line
+# sed -zi 's/\(<tr>\n\)\(<th .*\)\(\@[[:digit:]]\+\)/~%~\3\n<thead>\n<tr>\n\2/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<tr>\n)(<th .*)(\@\d+)/~%~$3\n<thead>\n<tr>\n$2/g' ./"$baseName"/"$baseName".html
 
 
 # Step 2 Add @ sign before each number in table formula
@@ -899,29 +901,29 @@ sed -i 's/<td>EMPTY<\/td>/<td>\&nbsp;<\/td>/g' ./"$baseName"/"$baseName".html
 
 ## Add <tbody> after a row ending with a cell that has "colgroup" and before a row beginning with "rowspan"
 
-perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th rowspan)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th rowspan)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
 
 ## Add <tbody> after a row ending with a cell that has "colgroup" and before a row beginning with scope="row"
 
-perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th scope="row")/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th scope="row")/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
 
 ## Correct multiple <thead> elements when there are two rowgroups when there are multiple rows that have a rowgroup
 
-perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<\/thead>.*\n.*<tbody>.*\n<tr class="table-body-start">.*\n)/$1\<\/tr>\n<tr>\n/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<\/thead>.*\n.*<tbody>.*\n<tr class="table-body-start">.*\n)/$1\<\/tr>\n<tr>\n/g' ./"$baseName"/"$baseName".html
 
 ## Add <tbody> when a table has no <thead> element and the first row starts with a header cell that has scope="row"
 
 perl -0777 -pi -e 's/(<\/caption>.*\n)(.*<tr>.*\n)(.*<th scope="row">)/$1<tbody>\n$2$3/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr class="no-row-header">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="colgroup" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr class="no-row-header">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">/g' ./"$baseName"/"$baseName".html
 
 # New in 1.7.0
 
 # Add closing </thead> and opening <tbody> when they are missing from tables that have multiple column headers
 
-perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th scope="row">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th scope="row">)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
 
-perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th rowspan)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
+# perl -0777 -pi -e 's/(scope="col" id="th_#link_to_header#">.*\n)(.*<\/tr>.*\n)(.*<tr>.*\n)(.*<th rowspan)/$1$2<\/thead>\n<tbody>\n<tr class="table-body-start">\n$4/g' ./"$baseName"/"$baseName".html
 
 #
 
@@ -956,6 +958,30 @@ perl -0777 -pi -e 's/(<tr class="table-body-start">)(.*\n<tr>)/$1/g' ./"$baseNam
 awk '{for(x=1;x<=NF;x++)if($x~/#link_to_header#/){sub(/#link_to_header#/,++i)}}1' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
 
 # 
+
+### New in 1.7.0.4
+
+# Put space between $ and number if there is none
+
+sed -i 's/\(>\$\)\([0-9]\)/\1 \2/g' ./"$baseName"/"$baseName".html
+
+# Add missing <tbody> if it is missing
+
+perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th colspan)/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+# perl -0777 -pi -e 's/(scope="colgroup" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+# perl -0777 -pi -e 's/(th colspan="\d" scope="colgroup" .*<\/th>)(.*\n<\/tr>)(.*\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+# sed -zi 's/\(<\/th>\)\(\n<\/tr>\n\)\(<tr>\n\)\(<th scope="row"\)/\1\2<\/thead>\n<tbody>\n<tr class="table-body-start">\n\4/g' ./"$baseName"/"$baseName".html
+
+# Add missing <thead> if it is missing
+
+# perl -0777 -pi -e 's/(<\/th>)(\n<\/tr>)(\n<tbody>)/$1$2\n<\/thead>$3/g' ./"$baseName"/"$baseName".html
+
+###
 
 # Add closing </aside> element to the end of a line that has text "Secondary Text End."
 
@@ -1949,6 +1975,20 @@ perl -pi -e 's/({)(.*?)(})/$end_delim=$3; "$1" . $2=~s|~| |gr . "$end_delim"/ge'
 fi
 
 fi
+
+### New 1.7.0.4
+
+# Add headings within <aside> areas if ##, ###, #### etc. are used
+
+sed -i 's/\(<p>##### \)\(.*\)\(<\/p>\)/<h5>\2<\/h5>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/\(<p>#### \)\(.*\)\(<\/p>\)/<h4>\2<\/h4>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/\(<p>### \)\(.*\)\(<\/p>\)/<h3>\2<\/h3>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/\(<p>## \)\(.*\)\(<\/p>\)/<h2>\2<\/h2>/g' ./"$baseName"/"$baseName".html
+
+###
 
 #
 
