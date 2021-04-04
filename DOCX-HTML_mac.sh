@@ -779,7 +779,9 @@ sed -i '' '/~%~@/s/[[:digit:]]/@&/g' ./"$baseName"/"$baseName".html
 
 # Step 3 Replace the @formula with the correct table markup
 
-sed -i '' '/\~%~/s/\(\@\)\([[:digit:]]\)/<colgroup span="\2"><\/colgroup>\n/g' ./"$baseName"/"$baseName".html
+perl -pi -e 's/(@)(\d)/<colgroup span="$2"><\/colgroup>\n/g if /^~%~/' ./"$baseName"/"$baseName".html
+
+###
 
 
 # Step 4 Remove Line Marker for tables
