@@ -1521,6 +1521,16 @@ sed -i 's/\(<a href="about:blank">\)\(.*\)\(<\/a>\)/\2/g' ./"$baseName"/"$baseNa
 
 sed -i 's/_edited<\/title>/<\/title>/g' ./"$baseName"/"$baseName".html
 
+#
+
+# Remove extra </p> if they exist after \begin matrix}
+
+sed -i 's/\\begin{bmatrix}<\/p>/\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/\\begin{matrix}<\/p>/\\begin{matrix}/g' ./"$baseName"/"$baseName".html
+
+#
+
 # Add Footnotes
 
 if [ -n "$footnote" ]; then
