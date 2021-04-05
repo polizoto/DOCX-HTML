@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.1.6
+# Version 0.1.7
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.1.6\n"
+    printf "\nVersion 0.1.7\n"
 
 return 0
 }
@@ -1279,6 +1279,20 @@ perl -0777 -pi -e 's/(<\/figure>.*\n)(.*<aside role="note")/\n$2/g' ./"$baseName
 
 sed -i '' 's/\(\\text{.*\)\\ \(.*}\)/\1 \2/g' ./"$baseName"/"$baseName".html
 
+## New in 0.1.7
+
+#
+
+# Find and replace the &amp; with &
+
+sed -i '' 's/&amp\; /\& /g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/<mi>&amp\;<\/mi>//g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/\\\& /\& /g' ./"$baseName"/"$baseName".html
+
+#
+
 # Blockquotes:
 
 perl -0777 -pi -e 's/<p>Citation Begin:<\/p>/<footer class="blockquote-footer">/g' ./"$baseName"/"$baseName".html
@@ -1511,6 +1525,21 @@ sed -i '' 's/\(<a href="about:blank">\)\(.*\)\(<\/a>\)/\2/g' ./"$baseName"/"$bas
 
 sed -i '' 's/_edited<\/title>/<\/title>/g' ./"$baseName"/"$baseName".html
 
+###
+
+# New in 0.1.7
+
+# Remove spurious closing </p> tag at the end of a \begin matrix LaTeX command
+
+sed -i '' 's/\\begin{matrix}<\/p>/\\begin{matrix}/g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/\\\[\\begin{bmatrix}<\/p>/\\[\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/\\begin{bmatrix}<\/p>/\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
+
+###
+
+
 # Add Footnotes
 
 if [ -n "$footnote" ]; then
@@ -1676,6 +1705,30 @@ perl -pi -e 's/ title="/\ntitle="/g' ./"$baseName"/"$baseName".html
 
 perl -pi -e 's/(alt=".*")(\n)/\n$1$2/g' ./"$baseName"/"$baseName".html
 
+## New in 0.1.7
+
+# Correct Multiple lines when there are matrices
+
+# Move alt="*" onto its own line if there are matrices
+
+perl -pi -0777 -e 's/(alt="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt="\\begin{matrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title="\\begin{matrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})(\n)/$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title=".*)(\\begin{matrix})(\n)/$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})/\n$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/\\\\\n/\\\\ /g' ./"$baseName"/"$baseName".html
+
+# End New
+
 ## Put two dollar signs around the the math equations
 
 perl -0777 -pi -e 's/(\n)(alt=")(.*)(")(\n)/$1\$\$$3\$\$$5/g' ./"$baseName"/"$baseName".html
@@ -1706,6 +1759,20 @@ sed -i '' 's/\(\$\$\)\(.*\)\(\$\$\)/@@ \2/g' ./"$baseName"/"$baseName".html
 # Delete Empty lines
 
 sed -i '' '/^\s*$/d' ./display-log.txt
+
+## Correct incorrect LaTex Code
+
+# Begin New in 0.1.7
+
+perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+
+perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
+
+perl -pi -e 's/&amp;/&/g' ./display-log.txt
+
+perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
+
+# End New
 
 touch ./display-log2.txt
 
@@ -1826,6 +1893,30 @@ perl -pi -e 's/ title="/\ntitle="/g' ./"$baseName"/"$baseName".html
 
 perl -pi -e 's/(alt=".*")(\n)/\n$1$2/g' ./"$baseName"/"$baseName".html
 
+## New in 0.1.7
+
+# Correct Multiple lines when there are matrices
+
+# Move alt="*" onto its own line if there are matrices
+
+perl -pi -0777 -e 's/(alt="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt="\\begin{matrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title="\\begin{matrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})(\n)/$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(title=".*)(\\begin{matrix})(\n)/$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})/\n$1$2/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/\\\\\n/\\\\ /g' ./"$baseName"/"$baseName".html
+
+# End New
+
 ## Put two dollar signs around the the math equations
 
 perl -0777 -pi -e 's/(\n)(alt=")(.*)(")(\n)/$1\$\$$3\$\$$5/g' ./"$baseName"/"$baseName".html
@@ -1844,6 +1935,22 @@ sed -i '' 's/\(\$\$\)\(.*\)\(\$\$\)/@@ \2/g' ./"$baseName"/"$baseName".html
 # Delete Empty lines
 
 sed -i '' '/^\s*$/d' ./display-log.txt
+
+## Correct incorrect LaTex Code
+
+# Begin New in 0.1.7
+
+perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+
+perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
+
+perl -pi -e 's/&amp;/&/g' ./display-log.txt
+
+perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
+
+# End New
+
+####
 
 touch ./display-log2.txt
 
