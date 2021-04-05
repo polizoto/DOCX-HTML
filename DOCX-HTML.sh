@@ -1904,8 +1904,6 @@ perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})/\n$1$2/g' ./"$baseName"/"$baseNa
 
 perl -0777 -pi -e 's/\\\\\n/\\\\ /g' ./"$baseName"/"$baseName".html
 
-cp ./"$baseName"/"$baseName".html ./svg-test3.html
-
 # End New
 
 ## Put two dollar signs around the the math equations
