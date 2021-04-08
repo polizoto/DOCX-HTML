@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.1
+# Version 1.7.2
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.1\n"
+    printf "\nVersion 1.7.2\n"
 
 return 0
 }
@@ -969,7 +969,15 @@ sed -i 's/\(>\$\)\([0-9]\)/\1 \2/g' ./"$baseName"/"$baseName".html
 
 perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
 
+# New in 1.7.2
+
+perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th rowspan)/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+#
+
+
 perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th colspan)/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
 
 # perl -0777 -pi -e 's/(scope="colgroup" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
 
@@ -1349,6 +1357,17 @@ sed -i 's/\(<td><p>^ \)\(.*\)/<th scope="row"><p>\2<\/p>/g' ./"$baseName"/"$base
 # Replace $ tag at the end of a  bulleted list with closing </th> tag
 
 perl -0777 -pi -e 's/($<\/li>\n)(<\/ul><\/td>)/<\/li>\n<\/ul><\/th>/g' ./"$baseName"/"$baseName".html
+
+# New in 1.7.2
+
+#
+
+perl -0777 -pi -e 's/><p>\^ /><p>/g' ./"$baseName"/"$baseName".html
+
+sed -zi 's/$<\/li>\n<\/ul><\/td>/<\/li>\n<\/ul><\/th>/g' ./"$baseName"/"$baseName".html
+
+#
+
 
 # Replace $ tag at the end of a  multiparagraph row header with closing </th> tag
 
