@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.1.7
+# Version 0.1.8
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -28,7 +28,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.1.7\n"
+    printf "\nVersion 0.1.8\n"
 
 return 0
 }
@@ -965,6 +965,12 @@ sed -i '' 's/\(>\$\)\([0-9]\)/\1 \2/g' ./"$baseName"/"$baseName".html
 
 perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
 
+# New in 0.1.8
+
+perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th rowspan)/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
+
+#
+
 perl -0777 -pi -e 's/(<th scope="col" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th colspan)/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
 
 # perl -0777 -pi -e 's/(scope="colgroup" .*<\/th>)(\n<\/tr>)(\n<tr>)(.*\n<th scope="row")/$1$2\n<\/thead>\n<tbody>\n<tr class="table-body-start">$4/g' ./"$baseName"/"$baseName".html
@@ -1353,6 +1359,19 @@ sed -i '' 's/\(<td><p>^ \)\(.*\)/<th scope="row"><p>\2<\/p>/g' ./"$baseName"/"$b
 # Replace $ tag at the end of a  bulleted list with closing </th> tag
 
 perl -0777 -pi -e 's/($<\/li>\n)(<\/ul><\/td>)/<\/li>\n<\/ul><\/th>/g' ./"$baseName"/"$baseName".html
+
+
+# New in 0.1.8
+
+#
+
+perl -0777 -pi -e 's/><p>\^ /><p>/g' ./"$baseName"/"$baseName".html
+
+# Unique to macOS script
+
+sed -i '' -e ':a' -e 'N' -e '$!ba' -e 's/$\(<\/li>\n\)<\/ul><\/td>/\1<\/ul><\/th>/g' ./"$baseName"/"$baseName".html
+
+#
 
 # Replace $ tag at the end of a  multiparagraph row header with closing </th> tag
 
@@ -1915,6 +1934,8 @@ perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})/\n$1$2/g' ./"$baseName"/"$baseNa
 
 perl -0777 -pi -e 's/\\\\\n/\\\\ /g' ./"$baseName"/"$baseName".html
 
+cp ./"$baseName"/"$baseName".html ./test-svg.html
+
 # End New
 
 ## Put two dollar signs around the the math equations
@@ -1947,6 +1968,8 @@ perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
 perl -pi -e 's/&amp;/&/g' ./display-log.txt
 
 perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
+
+# cp ./"$baseName"/"$baseName".html ./test-svg2.html
 
 # End New
 
