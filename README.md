@@ -24,7 +24,7 @@ Create Accessible HTML Files From DOCX
 - Table of contents (Headings 1-3)
 - language switches are automatically added (`lang` attribute) when using the `-l` option. Up to nine secondary languages
 - table accessibility markup is automatically added (e.g., `colspan`, `rowspan`, `scope` attributes) when MS Word Tags are used
-- math output options (mathjax, mathml, webtex, SVG). Mathjax is default. Use `-m` option for other targets
+- math output options (mathjax, mathml, webtex, SVG, mathspeak). Mathjax is default. Use `-m` option for other targets
 - hyperlinks for footnotes (automatically added with the -f option)
 - `<aside>` element for lines numbers (poetry) when using the `-n` option
 - `<aside>` element for secondary text and footnote regions
