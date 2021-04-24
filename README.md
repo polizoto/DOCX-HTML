@@ -29,6 +29,8 @@ Create Accessible HTML Files From DOCX
 - `<aside>` element for lines numbers (poetry) when using the `-n` option
 - `<aside>` element for secondary text and footnote regions
 - `<details>` element for extended descriptions
+- inspect the alternative text of mathematical content (when using the `-i` option)
+- export just HTML code, not <head> or <style> sections, for easier copying and pasting to LMS (when using the `-j` option)
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
 - edit HTML directly with VIM in the terminal (when using the `-e` option)
 - batch processing
