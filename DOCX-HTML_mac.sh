@@ -3145,7 +3145,15 @@ if [ ! -n "$SVG" ]; then
 
 # perl -pi -e 's/\\text{\\&(?!#\d+;)amp;}//g if /<figure>/' ./"$baseName"/"$baseName".html
 
-perl -pi -e 's/\\ / /g if /<figure>/' ./"$baseName"/"$baseName".html
+#perl -pi -e 's/\\ / /g if /<figure>/' ./"$baseName"/"$baseName".html
+
+# New 
+
+# Remove <figure> tags around webtex equations (inserting <p> tags instead)
+
+sed -i '' 's/\(<figure>\)\(.*latex.codecogs.com.*\)\(<\/figure>\)/<p>\2<\/p>/g' ./"$baseName"/"$baseName".html
+
+#
 
 # sed -i '' '/<p><img style=/s/\\%/%/g' ./"$baseName"/"$baseName".html
 
