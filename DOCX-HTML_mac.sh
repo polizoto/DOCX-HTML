@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.1.8
+# Version 0.1.9
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -16,6 +16,8 @@ function usage (){
 	printf " -e, Edit warnings and errors in the terminal (using Vim).\n"
     printf " -f, Add Footnotes. [Parameters: None]\n"
     printf " -h, Print help\n"
+	printf " -i, Inspect alternative text of math equations (requires use with -m mathspeak or -m SVG options). [Parameters: None]\n"
+	printf " -j, Just HTML body (no CSS or <head>). [Parameters: None]\n"
     printf " -l, Designate secondary languages (up to 9). Use -l flag before every secondary language. [Parameters: 2-letter ISO value]\n"
     printf " -m, Math output options. Parameters: mathml, webtex, svg, mathspeak (default is mathjax)\n"
     printf " -n, Add line numbers (poetry). [Parameters: None]\n"
@@ -28,12 +30,12 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.1.8\n"
+    printf "\nVersion 0.1.9\n"
 
 return 0
 }
 
-while getopts :s:l:m:fc:enrhwv flag
+while getopts :s:l:m:fc:enijrhwv flag
 
 do
     case "${flag}" in
@@ -52,7 +54,9 @@ do
         fi
         ;;
 		l) language+=("$OPTARG");;
+		i) inspect="${flag}";;
         f) footnote="${flag}";;
+		j) just="${flag}";;
 		c)
 		check=${OPTARG}
         if [[ ! "$check" == on && ! "$check" == off ]]; then 
@@ -123,6 +127,17 @@ done
         if [[ "$math" == "" ]]; then 
          math=mathjax        
         fi
+
+if [[ "$math" == "webtex" ]]; then 
+
+if [ -n "$inspect" ]; then
+
+inspect=off
+
+echo -e "\n\033[1;31mError: -i option does not work with webtex option. You must select either -m svg or -m mathspeak." >&2
+
+fi
+fi
 		
 # Make --webtex the math variable when the -m option is  speech
 
@@ -144,6 +159,15 @@ done
          
         fi
 		
+if [[ "$speech" == "on" ]]; then
+
+if [ -n "$inspect" ]; then
+
+inspect=on
+
+fi
+fi
+		
 # Make --webtex the math variable when the -m option is SVG
 
         if [[ "$math" == "svg" ]]; then 
@@ -163,6 +187,38 @@ done
         fi
          
         fi
+		
+if [[ "$SVG" == "on" ]]; then
+	
+	if [ -n "$inspect" ]; then
+	
+	inspect=on
+
+	fi
+	fi
+
+if [[ "$math" == "mathjax" ]]; then 
+
+if [ -n "$inspect" ]; then
+
+inspect=off
+
+echo -e "\n\033[1;31mError: -i option does not work with mathjax option. You must select either -m svg or -m mathspeak." >&2
+
+fi
+fi
+
+if [[ "$math" == "mathml" ]]; then 
+
+if [ -n "$inspect" ]; then
+
+inspect=off
+
+echo -e "\n\033[1;31mError: -i option does not work with mathml option. You must select either -m svg or -m mathspeak." >&2
+
+fi
+
+fi
 		
 # Make Standard.css the default stylesheet when the -s option is not used
 
@@ -1724,11 +1780,15 @@ perl -pi -e 's/ title="/\ntitle="/g' ./"$baseName"/"$baseName".html
 
 perl -pi -e 's/(alt=".*")(\n)/\n$1$2/g' ./"$baseName"/"$baseName".html
 
-## New in 0.1.7
+## New in 1.7.1
 
 # Correct Multiple lines when there are matrices
 
 # Move alt="*" onto its own line if there are matrices
+
+sed -i '' 's/\\begin{bmatrix}<\/p>/\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/\\begin{matrix}<\/p>/\\begin{matrix}/g' ./"$baseName"/"$baseName".html
 
 perl -pi -0777 -e 's/(alt="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
 
@@ -1759,19 +1819,33 @@ sed -n 's/\(\$\$\)\(.*\)\(\$\$\)/\2/p' ./"$baseName"/"$baseName".html > ./displa
 
 sed -i '' 's/^-/ -/g' ./display-log.txt
 
-# New in 0.1.5
+# New in 1.7.4
 
-sed -i '' 's/\\%/%/g' ./display-log.txt
+# Remove comma within equations
 
-sed -i '' 's/\\\%/%/g' ./display-log.txt
+perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+
+perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
+
+perl -pi -e 's/&amp;/&/g' ./display-log.txt
+
+perl -pi -e 's/\\\&/\&/g' ./display-log.txt
+
+perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
+
+perl -pi -e 's/,//g' ./display-log.txt
+
+## New in 1.7.4
 
 sed -i '' 's/~/ /g' ./display-log.txt
 
-# perl -pi -e 's/\\&(?!#\d+;)amp;//g' ./display-log.txt
+sed -i '' '/\\text/ s/^/"/' ./display-log.txt
 
-#
+sed -i '' '/^"/ s/$/"/' ./display-log.txt
 
-# Insert place marker for display equatios
+##
+
+# Insert place marker for display equations
 
 sed -i '' 's/\(\$\$\)\(.*\)\(\$\$\)/@@ \2/g' ./"$baseName"/"$baseName".html
 
@@ -1781,24 +1855,480 @@ sed -i '' '/^\s*$/d' ./display-log.txt
 
 ## Correct incorrect LaTex Code
 
-# Begin New in 0.1.7
+sed -i '' 's/"//g'  ./display-log.txt
 
-perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+# New in 1.7.4
+# Remove backslash SPACE if it exists within \text commands
 
-perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
+perl -0777 -i -wpe's{(\\text\{ (?:(?!\\text\{|\}).)*? \})}{ $1 =~ s/\\ / /gr }egmsx' ./display-log.txt
 
-perl -pi -e 's/&amp;/&/g' ./display-log.txt
+# Remove zero-width spaces from math text
 
-perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
+sed -i '' 's/\xe2\x80\x8b//g' ./display-log.txt 
+
+sed -i '' 's/\xe2\x80\x8d//g' ./display-log.txt 
+
+#
+
+sed -i '' 's/\\%/%/g'  ./display-log.txt
+
+perl -CD -i -wpe 's/\N{REPLACEMENT CHARACTER}//g' ./display-log.txt
 
 # End New
 
 touch ./display-log2.txt
 
+##################
+
+# New in 0.2.0
+
+if [[ "$inspect" == "on" ]]; then 
+
+echo -ne '\n'
+
+mv ./display-log.txt ./"$baseName"/
+
+mv ./display-log2.txt ./"$baseName"/
+
+cp ./"$baseName"/display-log.txt ./"$baseName"/latex_full.txt
+
+count=1
+while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m$count\033[0m\r" ; tex2svg "$p" >> ./"$baseName"/display-log2.txt  ; count=$[ $count + 1 ] ; done <./"$baseName"/display-log.txt 
+
+count=$[ $count - 1 ]
+
+cp ./"$baseName"/display-log2.txt ./"$baseName"/svg_full.txt
+
+sed -i '' -n 's/.*1-Title">//p' ./"$baseName"/display-log2.txt
+
+IFS=$IFS_OLD
+
+# Remove txt files
+
+rm ./"$baseName"/display-log.txt 
+
+# Delete Empty lines
+
+sed -i '' '/^\s*$/d' ./"$baseName"/display-log2.txt 
+
+# Remove <\/title>
+
+sed -i '' 's/<\/title>//g' ./"$baseName"/display-log2.txt 
+
+# Correct speech markup
+
+# Remove "reverse solidus" text within equations that have text style
+
+sed -i '' -e 's/ reverse-solidus//g' ./"$baseName"/display-log2.txt 
+
+
+### Add More Corrections Here #####
+
+# sed -i '' -e 's/ reverse-solidus//g' ./"$baseName"/display-log2.txt 
+
+# 
+
+# Add String to beginning of each line
+
+sed -i '' -e 's/^/@@ /' ./"$baseName"/display-log2.txt 
+
+cp ./"$baseName"/display-log2.txt ./"$baseName"/TTS_full.txt
+
+	#### New in 0.1.7
+	
+	# Make Corrections
+	
+sed -i '' 's/ quotation-mark//g' ./"$baseName"/TTS_full.txt	
+
+sed -i '' 's/ slash/ divided by/g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ percent-sign/ percent/g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ StartFraction/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ EndFraction/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ upper/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ left-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ right-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ right-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ comma //g' ./"$baseName"/TTS_full.txt
+
+####
+
+touch ./"$baseName"/math_equations.html
+
+echo -e "<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" lang="en">\n<head>\n<title>"$baseName" - Review Equations</title>\n<style>\n</style>\n</head>\n<body>\n<main>\n<h1>"$baseName" - Review Equations</h1>" | cat - ./"$baseName"/math_equations.html > temp && mv temp ./"$baseName"/math_equations.html
+
+COUNTER=1
+eval MAX=$count
+Headers="<h2>Equation</h2>"
+
+while (( $COUNTER <= $MAX )); do
+        echo -e "<div>\n<h2>"$COUNTER"</h2>\n<p><textarea id=\"equation_"$COUNTER"\">\n@@\n</textarea></p>\n</div>" >> ./"$baseName"/math_equations.html
+        let COUNTER=$COUNTER+1
+done
+
+#
+
+echo -e "</main>\n<footer>\n<p role=\"contentinfo\">This document was created by the Alternative Media Unit of the Disabled Students' Program at UC Berkeley. For questions or concerns about this document, please contact us at dspamc@berkeley.edu.</p>\n</footer>\n</main>\n</body>\n</html>" >> ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<\/h2>/<\/h2>\n<p><code>\n##\n<\/code><\/p>\n<p>\n%%\n<\/p>/g' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/## /g' ./"$baseName"/latex_full.txt
+
+# Add line marker before SVG line
+
+perl -0777 -pi -e 's/<svg /&&&\n<svg /g' ./"$baseName"/svg_full.txt
+
+# Move SVG components onto the same line
+
+awk '/^&&&/{a=1;b="";next}/^<\/svg>/{a=0;print"</svg>";next}a{printf b$0;b="";next}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+# Correct the IDs for each SVG to make them distinct
+
+sed -i '' 's/aria-labelledby="MathJax-SVG-1-Title"/aria-labelledby="svg_title_~~~"/g' ./"$baseName"/svg_full.txt
+
+sed -i '' 's/title id="MathJax-SVG-1-Title"/title id="svg_title_%%%"/g' ./"$baseName"/svg_full.txt
+
+awk '{for(x=1;x<=NF;x++)if($x~/~~~/){sub(/~~~/,++i)}}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+awk '{for(x=1;x<=NF;x++)if($x~/%%%/){sub(/%%%/,++i)}}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+# Add math class to SVG files
+
+sed -i '' -e 's/<svg /<svg class="math" /g' ./"$baseName"/svg_full.txt
+
+# Add String to beginning of each line
+
+sed -i '' -e 's/^/%% /' ./"$baseName"/svg_full.txt
+
+mv ./"$baseName"/latex_full.txt ./
+
+mv ./"$baseName"/svg_full.txt ./
+
+mv ./"$baseName"/TTS_full.txt ./
+
+awk '
+    /^##/{                   
+        getline <"./latex_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+awk '
+    /^%%/{                   
+        getline <"./svg_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+awk '
+    /^@@/{                   
+        getline <"./TTS_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+rm ./latex_full.txt
+
+rm ./svg_full.txt
+	
+sed -i '' 's/^\(## \)*//g' ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g' ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/math_equations.html
+
+# sed -zi 's/\(id="equation_[[:digit:]]\+>\)\(\n\)/\1/g' ./"$baseName"/math_equations.html
+perl -p00 -i -e 's/(id="equation_\d+">)(\n)/$1/g' ./"$baseName"/math_equations.html
+
+sed -i '' "s/<svg /<svg class="math" /g"	./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\n.math {\nbackground-color: #E7FFE7 ;\ndisplay: inline-block\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\ncode {\nbackground: #f4f4f4;background: #f4f4f4;\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\n.alt-text {\nbackground-color: #E6E6FA ;\ndisplay: inline-block\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\nh2 {\ncolor:blue;\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/(id="equation.*)(\n)/$1/g' ./"$baseName"/math_equations.html
+
+cp ./TTS_full.txt ./"$baseName"/TTS_full_2.txt
+
+rm ./TTS_full.txt 
+
+sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/TTS_full_2.txt
+
+awk '{filename = sprintf("equation_%d.txt", NR); print >filename; close(filename)}' ./"$baseName"/TTS_full_2.txt
+
+mv ./equation_*.txt ./"$baseName"/
+
+rm ./"$baseName"/TTS_full_2.txt
+
+echo -ne 'Processing equations... \033[1;32mDone.\033[0m\r'
+
+echo -ne '\n\n'
+
+echo -ne 'Opening Safari...'
+
+echo -ne '\n\n'
+
+cwd=$(pwd)
+
+open -a Safari "$cwd/$baseName/math_equations.html"
+
+while true; do
+
+read -n1 -p "Would you like to correct the alternative text of math equations in $(echo -e "\033[1;44m$baseName.html\033[0m\x1B[49m\x1B[K")? [Y/N]?" answer
+
+case $answer in
+Y | y) 
+	   echo -e "\n"
+	   correct=on
+	   break
+	   ;;
+	   
+N | n) 
+	   echo -e "\n"
+	   correct=off
+	   break
+	   ;;	
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ y / n].\033[0m\n"
+	   ;;
+
+	   
+esac
+
+done
+
+if [[ "$correct" == "on" ]]; then 
+
+function alt_text_math {
+if [ ! -f  "./$baseName/equation_new_$CHOICE.txt" ]; then 
+
+sed -i '' -e 's/^## //' ./"$baseName"/equation_$CHOICE.txt
+
+touch ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_$CHOICE.txt ./"$baseName"/equation_new_$CHOICE.txt
+
+perl -pi -e 's/(equation_'$CHOICE'">.*\n)/$1<\/textarea><\/p>/' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/%% /g' ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_new_$CHOICE.txt ./pronunciation.txt
+
+awk '
+    /^%%/{                   
+        getline <"./pronunciation.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
+
+rm ./pronunciation.txt
+
+echo -ne '\n'
+
+echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+
+fi
+
+}
+
+function equation_pronunciation {
+
+echo -ne '\n'
+
+read -p "Enter the correct pronunciation for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K"):" value
+
+echo "$value" > ./"$baseName"/equation_new_$CHOICE.txt
+
+perl -pi -e 's|(id="equation_'$CHOICE'">)(.*\n)|$1\n%%\n|g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's|^%%.*|%% |g' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/%% /g' ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_new_$CHOICE.txt ./pronunciation.txt
+
+awk '
+    /^%%/{                   
+        getline <"./pronunciation.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
+
+perl -pi -e 's|(id="equation_'$CHOICE'">.*)(\n)|$1|g' ./"$baseName"/math_equations.html
+
+rm ./pronunciation.txt
+
+echo -ne '\n'
+
+echo -ne "Alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K") changed. Refresh Safari browser (CMD +R) to see changes."
+
+echo -ne '\n\n'
+
+}
+
+while :; do
+
+	read -p "Enter the equation number $(echo -e "\033[1;44m(1-$MAX)\033[0m\x1B[49m\x1B[K"), or $(echo -e "\033[1;44mq\033[0m\x1B[49m\x1B[K") to exit:" CHOICE
+    
+	if [[ "$CHOICE" == "q" ]] ; then
+	
+	break;
+	
+	fi;
+	
+	if [[ "$CHOICE" -le "$MAX" ]] ; then
+	
+	alt_text_math
+	
+	equation_pronunciation
+	
+	else
+	
+	echo -e "\n\033[1;31mError: Invalid number\033[0m "$CHOICE". \033[1;31mYou must enter a number between\033[0m 1 \033[1;31mand\033[0m" $MAX"\033[1;31m.\033[0m\n"
+	
+	fi;
+	
+	done
+	
+	echo -ne '\n'
+
+fi
+
+touch ./"$baseName"/all.txt
+
+counter_math=1
+for x in ./"$baseName"/equation_*.txt; do
+
+        basePath=${x%.*}
+        Name=${basePath##*/}
+
+if [ -f ./"$baseName"/equation_new_$counter_math.txt ]; then
+
+perl -pi -e 's|^%% ||g' ./"$baseName"/equation_new_$counter_math.txt
+
+cat ./"$baseName"/equation_new_$counter_math.txt > ./"$baseName"/equation_$counter_math.txt		
+		
+fi
+
+if [ -f ./"$baseName"/equation_$counter_math.txt ]; then	
+
+cat ./"$baseName"/equation_$counter_math.txt >> ./"$baseName"/all.txt
+
+fi
+
+counter_math=$[ $counter_math + 1 ] ; 
+done
+
+rm ./"$baseName"/equation_*.txt
+sed -i '' -e 's/^/@@ /' ./"$baseName"/all.txt 
+mv ./"$baseName"/all.txt ./"$baseName"/display-log2.txt
+rm ./"$baseName"/math_equations.html
+
+while true; do
+
+read -n1 -p "Would you like to perform find and replace functions for the alternative text of math equations in $(echo -e "\033[1;44m$baseName.html\033[0m\x1B[49m\x1B[K")? [Y/N]?" answer
+
+case $answer in
+Y | y) 
+	   echo -e "\n"
+	   replace_correct=on
+	   break
+	   ;;
+	   
+N | n) 
+	   echo -e "\n"
+	   replace_correct=off
+	   break
+	   ;;	
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ y / n].\033[0m\n"
+	   ;;
+
+	   
+esac
+
+done
+
+function replace_pronunciation {
+
+while :; do
+
+	read -p "Enter the word(s) that you wish to replace (type q and press Enter to exit):" find
+	
+	if [[ "$find" == "q" ]] ; then
+	
+	break;
+	
+	fi;
+
+	echo -e "\n"
+
+read -p "Enter the word(s) that you wish to use instead of $(echo -e "\033[1;44m$find\033[0m\x1B[49m\x1B[K") (press enter to replace with NOTHING):" replace
+
+## FLAG
+perl -pi -e "s/$find/$replace/gi" ./"$baseName"/display-log2.txt
+
+if [[ ! $replace ]] ; then
+
+echo -e "\n\033[1;44m$find\033[0m\x1B[49m\x1B[K removed.\n"
+
+else 
+
+echo -e "\n\033[1;44m$find\033[0m\x1B[49m\x1B[K changed to \033[1;44m$replace\033[0m\x1B[49m\x1B[K.\n"
+
+fi
+	
+done
+
+#echo -e "\n"
+
+}
+
+if [[ "$replace_correct" == "on" ]]; then 
+
+replace_pronunciation
+
+fi
+
+mv ./"$baseName"/display-log2.txt ./
+
+# Add String to beginning of each line
+
+perl -pi -e 's|^@@ ||g' ./display-log2.txt
+
+sed -i '' -e 's/^/@@ alt="/' ./display-log2.txt
+
+### Remove spurious Unicode characters, such Synchronous idle
+
+perl -CD -i -wpe 's/\N{SYNCHRONOUS IDLE}//g' ./display-log2.txt
+
+###
+
+# End New in 0.2.0
+
+else
+
 echo -ne '\n'
 
 count=$1
-while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m'$count'\033[0m\r" ; tex2svg "$p" | sed -n 's/.*1-Title">//p' >> display-log2.txt ; count=$[ $count + 1 ] ; done <./display-log.txt
+while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m$count\033[0m\r" ; tex2svg "$p" | sed -n 's/.*1-Title">//p' >> display-log2.txt ; count=$[ $count + 1 ] ; done <./display-log.txt
 
 IFS=$IFS_OLD
 
@@ -1828,14 +2358,16 @@ sed -i '' -e 's/^/@@ alt="/' ./display-log2.txt
 
 # Replace display equations with lines from display-log2.txt
 
+fi
+
 awk '
     /^@@/{                   
         getline <"./display-log2.txt" 
     }
     1                      
     ' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
-	
-### New	0.1.6
+
+### New	
 	
 sed -i '' '/@@/s/quotation-mark//g' ./"$baseName"/"$baseName".html	
 
@@ -1858,7 +2390,7 @@ sed -i '' '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
 sed -i '' '/@@/s/ comma //g' ./"$baseName"/"$baseName".html
 
 ###
-       
+	
 # Replace placeholder text
 
 sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName".html
@@ -1881,24 +2413,22 @@ perl -0777 -pi -e 's/(\n)(title=".*" )(class="math)/" $3/g' ./"$baseName"/"$base
 
 perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 
-
 fi
 
 if [ -n "$SVG" ]; then
 
-## New in 0.1.5
+## New in 1-7-0-4
 
-# sed -i '' '/<p><img style=/s/\\%/%/g' ./"$baseName"/"$baseName".html
+sed -i '' '/<p><img style=/s/\\%/%/g' ./"$baseName"/"$baseName".html
 
-perl -pi -e 's/\\%/%/g if /<p><img/' ./"$baseName"/"$baseName".html
+### FLAG
+#sed -i '' '/<p><img style=/s/\\\%/%/2g' ./"$baseName"/"$baseName".html
+sed -i '' '/<p><img style=/s/\\\%/%/g' ./"$baseName"/"$baseName".html
 
-# sed -i '' '/<p><img style=/s/\\\%/%/2g' ./"$baseName"/"$baseName".html
 
-perl -pi -e 's/\\\%/%/g if /<p><img/' ./"$baseName"/"$baseName".html
-
-# sed -i '' '/<p><img style=/s/~/ /2g' ./"$baseName"/"$baseName".html
-
-perl -pi -e 's/~/ /g if /<p><img style/' ./"$baseName"/"$baseName".html
+### FLAG
+#sed -i '' '/<p><img style=/s/~/ /2g' ./"$baseName"/"$baseName".html
+sed -i '' '/<p><img style=/s/~/ /g' ./"$baseName"/"$baseName".html
 
 # perl -pi -e 's/\\&(?!#\d+;)amp;//g if /<p><img/' ./"$baseName"/"$baseName".html
 
@@ -1912,11 +2442,19 @@ perl -pi -e 's/ title="/\ntitle="/g' ./"$baseName"/"$baseName".html
 
 perl -pi -e 's/(alt=".*")(\n)/\n$1$2/g' ./"$baseName"/"$baseName".html
 
-## New in 0.1.7
+## New in 1.7.1
 
 # Correct Multiple lines when there are matrices
 
 # Move alt="*" onto its own line if there are matrices
+
+#
+
+sed -i '' 's/\\begin{bmatrix}<\/p>/\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/\\begin{matrix}<\/p>/\\begin{matrix}/g' ./"$baseName"/"$baseName".html
+
+#
 
 perl -pi -0777 -e 's/(alt="\\begin{bmatrix})(\n)/\n$1/g' ./"$baseName"/"$baseName".html
 
@@ -1934,8 +2472,6 @@ perl -pi -0777 -e 's/(alt=".*)(\\begin{matrix})/\n$1$2/g' ./"$baseName"/"$baseNa
 
 perl -0777 -pi -e 's/\\\\\n/\\\\ /g' ./"$baseName"/"$baseName".html
 
-cp ./"$baseName"/"$baseName".html ./test-svg.html
-
 # End New
 
 ## Put two dollar signs around the the math equations
@@ -1949,7 +2485,7 @@ sed -n 's/\(\$\$\)\(.*\)\(\$\$\)/\2/p' ./"$baseName"/"$baseName".html > ./displa
 
 sed -i '' 's/^-/ -/g' ./display-log.txt
 
-# Insert place marker for display equatios
+# Insert place marker for display equations
 
 sed -i '' 's/\(\$\$\)\(.*\)\(\$\$\)/@@ \2/g' ./"$baseName"/"$baseName".html
 
@@ -1959,7 +2495,9 @@ sed -i '' '/^\s*$/d' ./display-log.txt
 
 ## Correct incorrect LaTex Code
 
-# Begin New in 0.1.7
+# Begin New in 1.7.4
+
+# Remove comma within equations
 
 perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
 
@@ -1967,20 +2505,524 @@ perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
 
 perl -pi -e 's/&amp;/&/g' ./display-log.txt
 
+perl -pi -e 's/\\\&/\&/g' ./display-log.txt
+
 perl -pi -e 's/∰/\\iiint\\limits/g' ./display-log.txt
 
-# cp ./"$baseName"/"$baseName".html ./test-svg2.html
+perl -pi -e 's/,//g' ./display-log.txt
 
-# End New
+## New in 0.1.7
+
+sed -i '' 's/~/ /g' ./display-log.txt
+
+sed -i '' '/\\text/ s/^/"/' ./display-log.txt
+
+sed -i '' '/^"/ s/$/"/' ./display-log.txt
+
+##
+
+# Delete Empty lines
+
+sed -i '' '/^\s*$/d' ./display-log.txt
+
+# New in 0.1.7
+
+sed -i '' 's/~/ /g' ./display-log.txt
+
+sed -i '' 's/"//g'  ./display-log.txt
+
+# New in 0.2.0
+# Remove backslash SPACE if it exists within \text commands
+
+perl -0777 -i -wpe's{(\\text\{ (?:(?!\\text\{|\}).)*? \})}{ $1 =~ s/\\ / /gr }egmsx' ./display-log.txt
+
+# Remove zero-width spaces from math text
+
+sed -i '' 's/\xe2\x80\x8b//g' ./display-log.txt
+
+sed -i '' 's/\xe2\x80\x8d//g' ./display-log.txt
+
+#
+
+sed -i '' 's/\\%/%/g'  ./display-log.txt
 
 ####
 
 touch ./display-log2.txt
 
+##################
+
+# New in 0.2.0
+
+if [[ "$inspect" == "on" ]]; then 
+
+echo -ne '\n'
+
+mv ./display-log.txt ./"$baseName"/
+
+mv ./display-log2.txt ./"$baseName"/
+
+cp ./"$baseName"/display-log.txt ./"$baseName"/latex_full.txt
+
+count=1
+while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m$count\033[0m\r" ; tex2svg "$p" >> ./"$baseName"/display-log2.txt  ; count=$[ $count + 1 ] ; done <./"$baseName"/display-log.txt 
+
+count=$[ $count - 1 ]
+
+cp ./"$baseName"/display-log2.txt ./"$baseName"/svg_full.txt
+
+sed -i '' -n 's/.*1-Title">//p' ./"$baseName"/display-log2.txt
+
+IFS=$IFS_OLD
+
+# Remove txt files
+
+rm ./"$baseName"/display-log.txt 
+
+# Delete Empty lines
+
+sed -i '' '/^\s*$/d' ./"$baseName"/display-log2.txt 
+
+# Remove <\/title>
+
+sed -i '' 's/<\/title>//g' ./"$baseName"/display-log2.txt 
+
+# Correct speech markup
+
+# Remove "reverse solidus" text within equations that have text style
+
+sed -i '' -e 's/ reverse-solidus//g' ./"$baseName"/display-log2.txt 
+
+
+### Add More Corrections Here #####
+
+# sed -i '' -e 's/ reverse-solidus//g' ./"$baseName"/display-log2.txt 
+
+# 
+
+# Add String to beginning of each line
+
+sed -i '' -e 's/^/@@ /' ./"$baseName"/display-log2.txt 
+
+cp ./"$baseName"/display-log2.txt ./"$baseName"/TTS_full.txt
+
+	#### New in 0.1.7
+	
+	# Make Corrections
+	
+sed -i '' 's/ quotation-mark//g' ./"$baseName"/TTS_full.txt	
+
+sed -i '' 's/ slash/ divided by/g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ percent-sign/ percent/g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ StartFraction/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ EndFraction/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ upper/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ left-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ right-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ right-parenthesis/ /g' ./"$baseName"/TTS_full.txt
+
+sed -i '' 's/ comma //g' ./"$baseName"/TTS_full.txt
+
+####
+
+touch ./"$baseName"/math_equations.html
+
+echo -e "<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" lang="en">\n<head>\n<title>"$baseName" - Review Equations</title>\n<style>\n</style>\n</head>\n<body>\n<main>\n<h1>"$baseName" - Review Equations</h1>" | cat - ./"$baseName"/math_equations.html > temp && mv temp ./"$baseName"/math_equations.html
+
+COUNTER=1
+eval MAX=$count
+Headers="<h2>Equation</h2>"
+
+while (( $COUNTER <= $MAX )); do
+        echo -e "<div>\n<h2>"$COUNTER"</h2>\n<p><textarea id=\"equation_"$COUNTER"\">\n@@\n</textarea></p>\n</div>" >> ./"$baseName"/math_equations.html
+        let COUNTER=$COUNTER+1
+done
+
+#
+
+echo -e "</main>\n<footer>\n<p role=\"contentinfo\">This document was created by the Alternative Media Unit of the Disabled Students' Program at UC Berkeley. For questions or concerns about this document, please contact us at dspamc@berkeley.edu.</p>\n</footer>\n</main>\n</body>\n</html>" >> ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<\/h2>/<\/h2>\n<p><code>\n##\n<\/code><\/p>\n<p>\n%%\n<\/p>/g' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/## /g' ./"$baseName"/latex_full.txt
+
+# Add line marker before SVG line
+
+perl -0777 -pi -e 's/<svg /&&&\n<svg /g' ./"$baseName"/svg_full.txt
+
+# Move SVG components onto the same line
+
+awk '/^&&&/{a=1;b="";next}/^<\/svg>/{a=0;print"</svg>";next}a{printf b$0;b="";next}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+# Correct the IDs for each SVG to make them distinct
+
+sed -i '' 's/aria-labelledby="MathJax-SVG-1-Title"/aria-labelledby="svg_title_~~~"/g' ./"$baseName"/svg_full.txt
+
+sed -i '' 's/title id="MathJax-SVG-1-Title"/title id="svg_title_%%%"/g' ./"$baseName"/svg_full.txt
+
+awk '{for(x=1;x<=NF;x++)if($x~/~~~/){sub(/~~~/,++i)}}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+awk '{for(x=1;x<=NF;x++)if($x~/%%%/){sub(/%%%/,++i)}}1' ./"$baseName"/svg_full.txt > tmp && mv tmp ./"$baseName"/svg_full.txt
+
+# Add math class to SVG files
+
+sed -i '' -e 's/<svg /<svg class="math" /g' ./"$baseName"/svg_full.txt
+
+# Add String to beginning of each line
+
+sed -i '' -e 's/^/%% /' ./"$baseName"/svg_full.txt
+
+mv ./"$baseName"/latex_full.txt ./
+
+mv ./"$baseName"/svg_full.txt ./
+
+mv ./"$baseName"/TTS_full.txt ./
+
+awk '
+    /^##/{                   
+        getline <"./latex_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+awk '
+    /^%%/{                   
+        getline <"./svg_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+awk '
+    /^@@/{                   
+        getline <"./TTS_full.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+	
+rm ./latex_full.txt
+	
+sed -i '' 's/^\(## \)*//g' ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g' ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/math_equations.html
+
+# sed -zi 's/\(id="equation_[[:digit:]]\+>\)\(\n\)/\1/g' ./"$baseName"/math_equations.html
+perl -p00 -i -e 's/(id="equation_\d+">)(\n)/$1/g' ./"$baseName"/math_equations.html
+
+sed -i '' "s/<svg /<svg class="math" /g"	./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\n.math {\nbackground-color: #E7FFE7 ;\ndisplay: inline-block\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\ncode {\nbackground: #f4f4f4;background: #f4f4f4;\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\n.alt-text {\nbackground-color: #E6E6FA ;\ndisplay: inline-block\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/<style>/<style>\nh2 {\ncolor:blue;\n}\n/g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's/(id="equation.*)(\n)/$1/g' ./"$baseName"/math_equations.html
+
+cp ./TTS_full.txt ./"$baseName"/TTS_full_2.txt
+
+rm ./TTS_full.txt 
+
+sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/TTS_full_2.txt
+
+awk '{filename = sprintf("equation_%d.txt", NR); print >filename; close(filename)}' ./"$baseName"/TTS_full_2.txt
+
+mv ./equation_*.txt ./"$baseName"/
+
+rm ./"$baseName"/TTS_full_2.txt
+
+echo -ne 'Processing equations... \033[1;32mDone.\033[0m\r'
+
+echo -ne '\n\n'
+
+echo -ne 'Opening Safari...'
+
+echo -ne '\n\n'
+
+cwd=$(pwd)
+
+open -a Safari "$cwd/$baseName/math_equations.html"
+
+while true; do
+
+read -n1 -p "Would you like to correct the alternative text of math equations in $(echo -e "\033[1;44m$baseName.html\033[0m\x1B[49m\x1B[K")? [Y/N]?" answer
+
+case $answer in
+Y | y) 
+	   echo -e "\n"
+	   correct=on
+	   break
+	   ;;
+	   
+N | n) 
+	   echo -e "\n"
+	   correct=off
+	   break
+	   ;;	
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ y / n].\033[0m\n"
+	   ;;
+
+	   
+esac
+
+done
+
+if [[ "$correct" == "on" ]]; then 
+
+function alt_text_math {
+if [ ! -f  "./$baseName/equation_new_$CHOICE.txt" ]; then 
+
+sed -i '' -e 's/^## //' ./"$baseName"/equation_$CHOICE.txt
+
+touch ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_$CHOICE.txt ./"$baseName"/equation_new_$CHOICE.txt
+
+perl -pi -e 's/(equation_'$CHOICE'">.*\n)/$1<\/textarea><\/p>/' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/%% /g' ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_new_$CHOICE.txt ./pronunciation.txt
+
+awk '
+    /^%%/{                   
+        getline <"./pronunciation.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
+
+rm ./pronunciation.txt
+
+echo -ne '\n'
+
+echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+
+fi
+
+}
+
+function equation_pronunciation {
+
+echo -ne '\n'
+
+read -p "Enter the correct pronunciation for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K"):" value
+
+echo "$value" > ./"$baseName"/equation_new_$CHOICE.txt
+
+perl -pi -e 's|(id="equation_'$CHOICE'">)(.*\n)|$1\n%%\n|g' ./"$baseName"/math_equations.html
+
+perl -pi -e 's|^%%.*|%% |g' ./"$baseName"/math_equations.html
+
+sed -i '' -e 's/^/%% /g' ./"$baseName"/equation_new_$CHOICE.txt
+
+cp ./"$baseName"/equation_new_$CHOICE.txt ./pronunciation.txt
+
+awk '
+    /^%%/{                   
+        getline <"./pronunciation.txt" 
+    }
+    1                      
+    ' ./"$baseName"/math_equations.html > tmp && mv tmp ./"$baseName"/math_equations.html
+
+sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
+
+perl -pi -e 's|(id="equation_'$CHOICE'">.*)(\n)|$1|g' ./"$baseName"/math_equations.html
+
+rm ./pronunciation.txt
+
+echo -ne '\n'
+
+echo -ne "Alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K") changed. Refresh Safari browser (CMD + R) to see changes."
+
+echo -ne '\n\n'
+
+}
+
+while :; do
+
+	read -p "Enter the equation number $(echo -e "\033[1;44m(1-$MAX)\033[0m\x1B[49m\x1B[K"), or $(echo -e "\033[1;44mq\033[0m\x1B[49m\x1B[K") to exit:" CHOICE
+    
+	if [[ "$CHOICE" == "q" ]] ; then
+	
+	break;
+	
+	fi;
+	
+	if [[ "$CHOICE" -le "$MAX" ]] ; then
+	
+	alt_text_math
+	
+	equation_pronunciation
+	
+	else
+	
+	echo -e "\n\033[1;31mError: Invalid number\033[0m "$CHOICE". \033[1;31mYou must enter a number between\033[0m 1 \033[1;31mand\033[0m" $MAX"\033[1;31m.\033[0m\n"
+	
+	fi;
+	
+	done
+	
+	echo -ne '\n'
+
+fi
+
+touch ./"$baseName"/all.txt
+
+counter_math=1
+for x in ./"$baseName"/equation_*.txt; do
+
+        basePath=${x%.*}
+        Name=${basePath##*/}
+
+if [ -f ./"$baseName"/equation_new_$counter_math.txt ]; then
+
+perl -pi -e 's|^%% ||g' ./"$baseName"/equation_new_$counter_math.txt
+
+cat ./"$baseName"/equation_new_$counter_math.txt > ./"$baseName"/equation_$counter_math.txt		
+		
+fi
+
+if [ -f ./"$baseName"/equation_$counter_math.txt ]; then	
+
+cat ./"$baseName"/equation_$counter_math.txt >> ./"$baseName"/all.txt
+
+fi
+
+counter_math=$[ $counter_math + 1 ] ; 
+done
+
+rm ./"$baseName"/equation_*.txt
+sed -i '' -e 's/^/@@ /' ./"$baseName"/all.txt 
+mv ./"$baseName"/all.txt ./"$baseName"/display-log2.txt
+rm ./"$baseName"/math_equations.html
+
+while true; do
+
+read -n1 -p "Would you like to perform find and replace functions for the alternative text of math equations in $(echo -e "\033[1;44m$baseName.html\033[0m\x1B[49m\x1B[K")? [Y/N]?" answer
+
+case $answer in
+Y | y) 
+	   echo -e "\n"
+	   replace_correct=on
+	   break
+	   ;;
+	   
+N | n) 
+	   echo -e "\n"
+	   replace_correct=off
+	   break
+	   ;;	
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ y / n].\033[0m\n"
+	   ;;
+
+	   
+esac
+
+done
+
+function replace_pronunciation {
+
+while :; do
+
+	read -p "Enter the word(s) that you wish to replace (type q and press Enter to exit):" find
+	
+	if [[ "$find" == "q" ]] ; then
+	
+	break;
+	
+	fi;
+
+	echo -e "\n"
+
+read -p "Enter the word(s) that you wish to use instead of $(echo -e "\033[1;44m$find\033[0m\x1B[49m\x1B[K") (press enter to replace with NOTHING):" replace
+
+# FLAG
+perl -pi -e "s/$find/$replace/gi" ./"$baseName"/display-log2.txt
+
+if [[ ! $replace ]] ; then
+
+echo -e "\n\033[1;44m$find\033[0m\x1B[49m\x1B[K removed.\n"
+
+else 
+
+echo -e "\n\033[1;44m$find\033[0m\x1B[49m\x1B[K changed to \033[1;44m$replace\033[0m\x1B[49m\x1B[K.\n"
+
+fi
+	
+done
+
+# echo -e "\n"
+
+}
+
+if [[ "$replace_correct" == "on" ]]; then 
+
+replace_pronunciation
+
+fi
+
+mv ./"$baseName"/display-log2.txt ./
+
+# Combine TTS in SVG
+
+##
+
+cp ./display-log2.txt ./display-log3.txt
+
+perl -pi -e 's/^%% /@@ /g' ./svg_full.txt
+
+perl -pi -e 's/(id="svg_title_\d+">)(.*)(<\/title>)/$1\n%%\n$3/g' ./svg_full.txt
+
+perl -pi -e 's/^@@ /%% /g' ./display-log3.txt
+
+# Replace display equations with lines from display-log2.txt
+
+awk '
+    /^%%/{                   
+        getline <"./display-log3.txt" 
+    }
+    1                      
+    ' ./svg_full.txt > tmp && mv tmp ./svg_full.txt
+	
+perl -p00 -i -e 's/(\n\%\%)(.*)(\n)/$2/g' ./svg_full.txt
+
+mv ./svg_full.txt ./display-log2.txt
+
+rm ./display-log3.txt
+
+### Remove spurious Unicode characters, such Synchronous idle
+
+perl -CD -i -wpe 's/\N{SYNCHRONOUS IDLE}//g' ./display-log2.txt
+
+
+###
+
+##
+
+# End New in 0.2.0
+
+else
+
 echo -ne '\n'
 
 count=$1
-while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m'$count'\033[0m\r" ; tex2svg "$p" >> display-log2.txt ; count=$[ $count + 1 ] ; done <./display-log.txt
+while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m$count\033[0m\r" ; tex2svg "$p" >> display-log2.txt ; count=$[ $count + 1 ] ; done <./display-log.txt
 
 IFS=$IFS_OLD
 
@@ -1990,6 +3032,8 @@ echo -ne '\n'
 # Remove txt files
 
 rm ./display-log.txt
+
+cp ./display-log2.txt ./regular.txt
 
 # Add line marker before SVG line
 
@@ -2020,6 +3064,8 @@ sed -i '' -e 's/<svg /<svg class="math" /g' ./display-log2.txt
 
 sed -i '' -e 's/^/@@ /' ./display-log2.txt
 
+fi
+
 # Insert equations into txt file
 
 # Replace display equations with lines from display-log2.txt
@@ -2030,8 +3076,8 @@ awk '
     }
     1                      
     ' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
-	
-### New	in 0.1.6
+
+### New	
 	
 sed -i '' '/@@/s/quotation-mark//g' ./"$baseName"/"$baseName".html	
 
@@ -2054,7 +3100,7 @@ sed -i '' '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
 sed -i '' '/@@/s/ comma //g' ./"$baseName"/"$baseName".html
 
 ###
-       
+  
 # Replace placeholder text
 
 sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName".html
@@ -2085,9 +3131,9 @@ perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 
 # Remove figure element from display equations before SVG
 
-sed -i '' 's/<figure> <svg/<svg/g' ./"$baseName"/"$baseName".html
+sed -i '' 's/<figure> <svg/<p><svg/g' ./"$baseName"/"$baseName".html
 
-sed -i '' 's/<\/svg><\/figure>/<\/svg>/g' ./"$baseName"/"$baseName".html
+sed -i '' 's/<\/svg><\/figure>/<\/svg><\/p>/g' ./"$baseName"/"$baseName".html
 
 fi
 
@@ -2544,6 +3590,24 @@ else
     echo -e "\nA copy of \033[1;35m"$baseName".docx\033[0m was moved to the \033[1;44mConverted-DOCX-HTML\033[0m folder.\x1B[49m\x1B[K"
 
 fi
+
+#####
+
+if [ -n "$just" ]; then
+
+# Different than PC script
+
+# Delete everything before the <main> element
+
+awk '/<body>/{p=1;next}{if(p){print}}' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
+
+# Delete Everything after </main> element
+
+awk '/<footer>/ {exit} {print}' ./"$baseName"/"$baseName".html > tmp && mv tmp ./"$baseName"/"$baseName".html
+
+fi
+
+####
 
 done
 
