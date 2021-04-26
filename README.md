@@ -11,8 +11,8 @@ Create Accessible HTML Files From DOCX
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
 ## Optional
-- [Nodejs](https://nodejs.org/en/) - for use with the `-m` option to output math as `svg` and `mathspeak`
-- [MathJax Node SRE](https://www.npmjs.com/package/mathjax-node-sre) - for use with the `-m` option to output math as `svg` and `mathspeak`
+- [Nodejs](https://nodejs.org/en/) - for use with the `-m` option to output math as `svg` or `mathspeak`
+- [MathJax Node SRE](https://www.npmjs.com/package/mathjax-node-sre) - for use with the `-m` option to output math as `svg` or `mathspeak`
 - [VIM](https://www.vim.org/download.php) - for use with `-e` flag (if you want to view any errors in the terminal and edit them directly)
 
 ## Setup
