@@ -22,7 +22,7 @@ Create Accessible HTML Files From DOCX
 4. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
 5. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
 
-### Optional Setup for processing math equations:
+### Optional Setup for processing math equations as `svg` or `mathspeak`:
 1. Install [Nodejs](https://nodejs.org/en/)
 2. Open the terminal and type `npm install -g mathjax-node-cli` and press Enter. Wait for installation to complete
 3. Open the terminal and type  `npm install -g mathjax-node-sre` and press Enter. Wait for the installation to complete
