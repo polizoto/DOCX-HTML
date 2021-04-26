@@ -245,7 +245,7 @@ See the following documents for examples of DOCX files with "MS Word tags" and t
 
 ### AHG Conference - 2020
 
-See the following links to the presentation and video tutorials from our workshop "Accessible HTML – Why It’s a Good Format for your Students and How to Create It!" delivered on November 17, 2021 at the [Accessing Higher Ground Conference - 2020](https://accessinghigherground.org/accessible-html-why-its-a-good-format-for-your-students-and-how-to-create-it/):
+See the following links to the presentation and video tutorials from our workshop "Accessible HTML – Why It’s a Good Format for your Students and How to Create It!" delivered on November 17, 2020 at the [Accessing Higher Ground Conference - 2020](https://accessinghigherground.org/accessible-html-why-its-a-good-format-for-your-students-and-how-to-create-it/):
 
 - [Accessing Higher Ground 2020 - Presentation](https://www.dropbox.com/s/yrbzebr9fwjntl6/Accessible%20HTML%20-%20AHG%202020.pptx?dl=0)
 - [Accessing Higher Ground 2020 - Video Tutorials - Video 1](https://www.dropbox.com/s/16p5mi3as24wvr6/00%20Accessible%20HTML%20Setup%20-%20Open%20Captions.mp4?dl=0)
