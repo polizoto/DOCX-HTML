@@ -11,7 +11,9 @@ Create Accessible HTML Files From DOCX
 - [Tasklist.exe](https://www.computerhope.com/download/winxp.htm) (PC only)
 
 ## Optional
-[VIM](https://www.vim.org/download.php) - for use with `-e` flag (if you want to view any errors in the terminal and edit them directly)
+- [Nodejs](https://nodejs.org/en/) - for use with `svg` and `mathspeak` math outputs when using the `-m option`
+- [MathJax Node SRE](https://www.npmjs.com/package/mathjax-node-sre) - for use with `svg` and `mathspeak` math outputs when using the `-m option`
+- [VIM](https://www.vim.org/download.php) - for use with `-e` flag (if you want to view any errors in the terminal and edit them directly)
 
 ## Setup
 1. Download the DOCX-HTML.sh script to your [macOS](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML_mac.sh) or [PC](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML.sh)
