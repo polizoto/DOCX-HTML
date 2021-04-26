@@ -3023,8 +3023,6 @@ echo -ne '\n'
 
 rm ./display-log.txt
 
-cp ./display-log2.txt ./regular.txt
-
 # Add line marker before SVG line
 
 perl -0777 -pi -e 's/<svg /&&&\n<svg /g' ./display-log2.txt
