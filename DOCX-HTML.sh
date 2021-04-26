@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.4
+# Version 1.7.5
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -30,7 +30,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.4\n"
+    printf "\nVersion 1.7.5\n"
 
 return 0
 }
@@ -1763,6 +1763,8 @@ fi
 
 # Add Better alternative text for math equations
 
+if grep -q "title=\"" ./"$baseName"/"$baseName".html; then
+
 if [ -n "$speech" ]; then
 
 ## Move title="*" onto its own line
@@ -2129,9 +2131,9 @@ sed -i 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
 
 rm ./pronunciation.txt
 
-echo -ne '\n'
+#echo -ne '\n'
 
-echo -e "Refresh MS Edge browser (CTRL +R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+#echo -e "Refresh MS Edge browser (CTRL +R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
 
 fi
 
@@ -2270,7 +2272,7 @@ while :; do
 	
 	fi;
 
-	echo -e "\n"
+	#echo -e "\n"
 
 read -p "Enter the word(s) that you wish to use instead of $(echo -e "\033[1;44m$find\033[0m\x1B[49m\x1B[K") (press enter to replace with NOTHING):" replace
 
@@ -2405,6 +2407,10 @@ perl -0777 -pi -e 's/(\n)(title=".*" )(class="math)/" $3/g' ./"$baseName"/"$base
 perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 
 fi
+
+fi
+
+if grep -q "title=\"" ./"$baseName"/"$baseName".html; then
 
 if [ -n "$SVG" ]; then
 
@@ -2792,9 +2798,9 @@ sed -i 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
 
 rm ./pronunciation.txt
 
-echo -ne '\n'
+#echo -ne '\n'
 
-echo -e "Refresh MS Edge browser (CTRL +R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+#echo -e "Refresh MS Edge browser (CTRL +R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
 
 fi
 
@@ -3121,6 +3127,8 @@ sed -i 's/<\/svg><\/figure>/<\/svg><\/p>/g' ./"$baseName"/"$baseName".html
 
 fi
 
+fi
+
 # New in version 1.7.0.4
 
 if [[ "$math" == "webtex" ]]; then 
@@ -3148,7 +3156,6 @@ sed -i '/<p><img style=/s/\\\%/%/2g' ./"$baseName"/"$baseName".html
 perl -pi -e 's/({)(.*?)(})/$end_delim=$3; "$1" . $2=~s|~| |gr . "$end_delim"/ge' ./"$baseName"/"$baseName".html
 
 # sed -i 's/\\text/&\n/;h;y/~/ /;H;g;s/\n.*\n//' ./"$baseName"/"$baseName".html
-
 
 fi
 
