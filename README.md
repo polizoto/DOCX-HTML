@@ -23,7 +23,7 @@ Create Accessible HTML Files From DOCX
 5. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
 6. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
 
-Note: If you want the script to be available systemwide on a PC, place it in the following folder: `C:\Program Files\Git\usr\bin`; on macOS, place it here: `/usr/local/bin`. On macOS, you will need to show hidden folders to access this directory in the Finder window. Use `CMD + Shift + .` to reveal hidden folder and then use it again to hide them.
+Note: If you want the script to be available systemwide on a PC, place it in the following folder: `C:\Program Files\Git\usr\bin`; on macOS, place it here: `/usr/local/bin`. On macOS, you will need to show hidden folders to access this directory in the Finder window. Use `CMD + Shift + .` to reveal hidden folders/files and then use it again to hide them.
 
 ### Optional Setup for processing math equations as `svg` or `mathspeak`:
 1. Install [Nodejs](https://nodejs.org/en/)
