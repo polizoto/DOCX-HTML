@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.1.9
+# Version 0.2.0
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -30,7 +30,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.1.9\n"
+    printf "\nVersion 0.2.0\n"
 
 return 0
 }
@@ -1769,6 +1769,8 @@ sed -i '' 's/\(<a href="about:blank#.*>\)\(<sup>.*<\/sup>\)\(<\/a>\)/\2/g' ./"$b
 fi
 
 # Add Better alternative text for math equations
+#
+if grep -q "title=\"" ./"$baseName"/"$baseName".html; then
 
 if [ -n "$speech" ]; then
 
@@ -2067,7 +2069,7 @@ sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/TTS_full_2.txt
 
 awk '{filename = sprintf("equation_%d.txt", NR); print >filename; close(filename)}' ./"$baseName"/TTS_full_2.txt
 
-mv ./equation_*.txt ./"$baseName"/
+mv ./equation_*.txt ./"$baseName"/ > /dev/null
 
 rm ./"$baseName"/TTS_full_2.txt
 
@@ -2137,9 +2139,9 @@ sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
 
 rm ./pronunciation.txt
 
-echo -ne '\n'
+# echo -ne '\n'
 
-echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+# echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
 
 fi
 
@@ -2235,7 +2237,7 @@ fi
 counter_math=$[ $counter_math + 1 ] ; 
 done
 
-rm ./"$baseName"/equation_*.txt
+rm ./"$baseName"/equation_*.txt > /dev/null
 sed -i '' -e 's/^/@@ /' ./"$baseName"/all.txt 
 mv ./"$baseName"/all.txt ./"$baseName"/display-log2.txt
 rm ./"$baseName"/math_equations.html
@@ -2278,7 +2280,7 @@ while :; do
 	
 	fi;
 
-	echo -e "\n"
+	#echo -e "\n"
 
 read -p "Enter the word(s) that you wish to use instead of $(echo -e "\033[1;44m$find\033[0m\x1B[49m\x1B[K") (press enter to replace with NOTHING):" replace
 
@@ -2414,6 +2416,10 @@ perl -0777 -pi -e 's/(\n)(title=".*" )(class="math)/" $3/g' ./"$baseName"/"$base
 perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 
 fi
+
+fi
+
+if grep -q "title=\"" ./"$baseName"/"$baseName".html; then
 
 if [ -n "$SVG" ]; then
 
@@ -2737,7 +2743,7 @@ sed -i '' 's/^\(@@ \)*//g'	./"$baseName"/TTS_full_2.txt
 
 awk '{filename = sprintf("equation_%d.txt", NR); print >filename; close(filename)}' ./"$baseName"/TTS_full_2.txt
 
-mv ./equation_*.txt ./"$baseName"/
+mv ./equation_*.txt ./"$baseName"/ > /dev/null
 
 rm ./"$baseName"/TTS_full_2.txt
 
@@ -2807,9 +2813,9 @@ sed -i '' 's/^\(%% \)*//g'	./"$baseName"/math_equations.html
 
 rm ./pronunciation.txt
 
-echo -ne '\n'
+# echo -ne '\n'
 
-echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
+# echo -e "Refresh Safari browser (CMD + R) to see the new alternative text for $(echo -e "\033[1;44mequation $CHOICE\033[0m\x1B[49m\x1B[K")."
 
 fi
 
@@ -2905,7 +2911,7 @@ fi
 counter_math=$[ $counter_math + 1 ] ; 
 done
 
-rm ./"$baseName"/equation_*.txt
+rm ./"$baseName"/equation_*.txt > /dev/null
 sed -i '' -e 's/^/@@ /' ./"$baseName"/all.txt 
 mv ./"$baseName"/all.txt ./"$baseName"/display-log2.txt
 rm ./"$baseName"/math_equations.html
@@ -2948,7 +2954,7 @@ while :; do
 	
 	fi;
 
-	echo -e "\n"
+	# echo -e "\n"
 
 read -p "Enter the word(s) that you wish to use instead of $(echo -e "\033[1;44m$find\033[0m\x1B[49m\x1B[K") (press enter to replace with NOTHING):" replace
 
@@ -3033,7 +3039,7 @@ echo -ne '\n'
 
 rm ./display-log.txt
 
-cp ./display-log2.txt ./regular.txt
+#cp ./display-log2.txt ./regular.txt
 
 # Add line marker before SVG line
 
@@ -3134,6 +3140,8 @@ perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 sed -i '' 's/<figure> <svg/<p><svg/g' ./"$baseName"/"$baseName".html
 
 sed -i '' 's/<\/svg><\/figure>/<\/svg><\/p>/g' ./"$baseName"/"$baseName".html
+
+fi
 
 fi
 
