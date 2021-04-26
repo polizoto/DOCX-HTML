@@ -16,16 +16,19 @@ Create Accessible HTML Files From DOCX
 - [VIM](https://www.vim.org/download.php) - for use with `-e` flag (if you want to view any errors in the terminal and edit them directly)
 
 ## Setup
-1. Download the DOCX-HTML.sh script to your [macOS](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML_mac.sh) or [PC](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML.sh)
-2. Place the script in an easy-to-locate folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
-3. Create a "stylesheets" folder in your `C:\stylesheets\` drive (PC) or in your Home directory `~/stylesheets/` (Mac); Name your default stylesheet "standard.css"
-4. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
-5. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
+1. Install [Pandoc](https://pandoc.org/installing.html)
+2. Download the DOCX-HTML.sh script to your [macOS](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML_mac.sh) or [PC](https://github.com/polizoto/DOCX-HTML/blob/main/DOCX-HTML.sh)
+3. Place the script in an easy-to-locate folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
+4. Create a "stylesheets" folder in your `C:\stylesheets\` drive (PC) or in your Home directory `~/stylesheets/` (Mac); Name your default stylesheet "standard.css"
+5. Download and unpack the NuHTML zip folder to your `C:\` drive (PC) or to your Home directory `~/` (Mac). On a PC the path to the vnu.bat file should `C:\vnu-runtime-image\bin`; on a macOS, the path to the vnu.jar file should be `~/`.
+6. Place Tasklist.exe in the `C:\scripts\` folder (PC only)
+
+Note: If you want the script to be available systemwide on a PC, place it in the following folder: `C:\Program Files\Git\usr\bin`; on macOS, place it here: `/usr/local/bin`. On macOS, you will need to show hidden folders to access this directory in the Finder window. Use `CMD + Shift + .` to reveal hidden folder and then use it again to hide them.
 
 ### Optional Setup for processing math equations as `svg` or `mathspeak`:
 1. Install [Nodejs](https://nodejs.org/en/)
-2. Open the terminal and type `npm install -g mathjax-node-cli` and press Enter. Wait for installation to complete
-3. Open the terminal and type  `npm install -g mathjax-node-sre` and press Enter. Wait for the installation to complete
+2. Open the terminal and type `npm install -g mathjax-node-cli` and press Enter. Wait for installation to complete. (Note: use `sudo` before the command if you are on macOS)
+3. Open the terminal and type  `npm install -g mathjax-node-sre` and press Enter. Wait for the installation to complete. (Note: use `sudo` before the command if you are on macOS)
 4. (For PC users) Edit the environmental variables on your machine to include the path to the mathjax-node-cli\bin and node_modules folders, respectively. These should be located here:
 
             C:\Users\YOUR-NAME\AppData\Roaming\npm\node_modules
