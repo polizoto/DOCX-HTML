@@ -255,6 +255,12 @@ See the following links to the presentation and video tutorials from our worksho
 
 **Note:** The current version of DOCX-HTML.sh script is slightly different than the version used at the AHG conference. There is now a version for the macOS as well.
 
+### Math to HTML Workflow
+
+See the following presentation entitled "Turning Math into HTML" delivered on April 28, 2021 for Phillip White and North Carolina accessibility professionals:
+
+[Turning Math Into HTML - Presentation](https://youtu.be/ophpILKTVNI)
+
 ### Validate-HTML Script
 
 - If you would like to run the NuHTML validator after creating an HTML file(s), you can use the Validate-HTML script (for PC):
