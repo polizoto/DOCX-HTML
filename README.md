@@ -45,7 +45,7 @@ Note: If you want the script to be available systemwide on a PC, place it in the
 - `<aside>` element for secondary text and footnote regions
 - `<details>` element for extended descriptions
 - inspect the alternative text of mathematical content (when using the `-i` option)
-- export just HTML code, not <head> or <style> sections, for easier copying and pasting to LMS (when using the `-j` option)
+- export just HTML code, excluding the `<head>`, `<style>`, and `<footer>` sections, for easier copying and pasting to LMS (when using the `-j` option)
 - export new DOCX file for PDF workflows (when using `-p` option), which can be helpful for producing alternative text for math content
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
 - edit HTML directly with VIM in the terminal (when using the `-e` option)
