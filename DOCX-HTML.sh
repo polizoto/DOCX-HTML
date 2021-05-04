@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.5
+# Version 1.7.6
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -21,6 +21,7 @@ function usage (){
     printf " -l, Designate secondary languages (up to 9). Use -l flag before every secondary language. [Parameters: 2-letter ISO value]\n"
     printf " -m, Math output options. Parameters: mathml, webtex, svg, mathspeak (default is mathjax)\n"
     printf " -n, Add line numbers (poetry). [Parameters: None]\n"
+	printf " -p, PDF output. Saves (reformatted) DOCX to HTML directory. [Parameters: None]\n"
 	printf " -r, Remove markup (e.g., MS Word hyperlinks). [Parameters: None]\n"
     printf " -s, Specify a stylesheet.[Parameters: Name of stylesheet (default: standard.css)]\n"
 	printf " -w, Check if Word is running (using tasklist) and move all DOCX files to converted DOCX-HTML folder after conversion.[Parameters: None]\n"
@@ -30,12 +31,12 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.5\n"
+    printf "\nVersion 1.7.6\n"
 
 return 0
 }
 
-while getopts :s:l:im:fc:ejnrhwv flag
+while getopts :s:l:im:fc:ejnprhwv flag
 
 do
     case "${flag}" in
@@ -75,6 +76,7 @@ do
         n) linenumbers="${flag}";;
         --) shift
             break;;
+		p) pdf="${flag}";;	
 		r) remove="${flag}";;
 		w) word="${flag}";
 		if [ ! -f /c/scripts/tasklist.exe ]; then
@@ -3555,6 +3557,96 @@ fi
 	#rm ./"$baseName"_edited.docx 2> /dev/null 
     
    # echo -e "\n\033[1;35m"$baseName".docx\033[0m was moved to the \033[1;44mConverted-DOCX-HTML\033[0m folder."
+
+#####
+
+if [ -n "$just" ]; then
+
+# Delete everything before the <main> element
+
+sed -i '0,/^<body>$/d' ./"$baseName"/"$baseName".html
+
+sed -i -n '/<footer>/q;p' ./"$baseName"/"$baseName".html
+
+fi
+
+# For PDF conversion
+
+if [ -n "$pdf" ]; then
+
+cp ./"$baseName"/"$baseName".html ./"$baseName"/"$baseName"_pdf.html
+
+sed -i '0,/^<main>$/d' ./"$baseName"/"$baseName"_pdf.html
+
+sed -i -n '/<\/main>/q;p' ./"$baseName"/"$baseName"_pdf.html
+
+sed -i 's/<a id=\"table.*//g' ./"$baseName"/"$baseName"_pdf.html
+
+sed -i 's/<p><a href=\"#table.*//g' ./"$baseName"/"$baseName"_pdf.html
+
+sed -i -e 's/<\/div>//g' ./"$baseName"/"$baseName"_pdf.html
+
+sed -i -e 's/<div class=\"table-container\" tabindex=\"0\">//g' ./"$baseName"/"$baseName"_pdf.html
+
+if [[ "$math" == "webtex" ]]; then 
+
+sed -i -r 's/title="[^"]*" //g'  ./"$baseName"/"$baseName"_pdf.html
+
+fi 
+
+if [ -n "$SVG" ]; then
+
+echo -e "\n\033[1;33mATTENTION:\033[0m The math equations in \033[1;35m"$baseName".html\033[0m are in SVG and cannot be converted back to DOCX format. Consider using the -m webtex or -m mathspeak options to generate alternative text for math in PDF workflows. Will not create \033[1;35m"$baseName"_pdf.docx\033[0m..."
+
+rm ./"$baseName"/"$baseName"_pdf.html
+
+else
+
+pandoc ./"$baseName"/"$baseName"_pdf.html -t docx -o ./"$baseName"/"$baseName"_pdf.docx
+
+echo -e "\n\033[1;33mATTENTION:\033[0m \033[1;35m"$baseName"_pdf.docx\033[0m was created in the \033[1;44m/"$baseName"/\033[0m folder."
+
+rm ./"$baseName"/"$baseName"_pdf.html
+
+fi
+ 
+if [[ "$math" == "mathml" ]]; then 
+
+echo -e "\n\033[1;33mATTENTION:\033[0m The math equations in \033[1;35m"$baseName"_pdf.docx\033[0m are in Office Math format. Consider using the -m webtex or -m mathspeak options to generate alternative text for math in PDF workflows."
+
+fi
+
+if [[ "$math" == "mathjax" ]]; then 
+
+echo -e "\n\033[1;33mATTENTION:\033[0m The math equations in \033[1;35m"$baseName"_pdf.docx\033[0m are in LaTeX format. Consider converting these to MathType format or to Office Math format. Consider using the -m webtex or -m mathspeak options to generate alternative text for math in PDF workflows."
+
+fi 
+
+if [[ "$math" == "webtex" ]]; then 
+
+if [ -n "$speech" ]; then
+
+echo -e "\n\033[1;33mATTENTION:\033[0m The math equations in \033[1;35m"$baseName"_pdf.docx\033[0m have descriptive alt text."
+
+else
+
+echo -e "\n\033[1;33mATTENTION:\033[0m The math equations in \033[1;35m"$baseName"_pdf.docx\033[0m have LaTeX alt text."
+
+fi
+
+fi
+
+if [ ! -n "$SVG" ]; then
+
+echo -e "\nUse your preferred Save As PDF tool (e.g., axesWord) to convert to PDF."
+
+fi
+
+fi
+
+#
+
+####
    
 if [ -n "$word" ]; then
 
@@ -3583,20 +3675,6 @@ else
     echo -e "\nA copy of \033[1;35m"$baseName".docx\033[0m was moved to the \033[1;44mConverted-DOCX-HTML\033[0m folder."
 
 fi
-
-#####
-
-if [ -n "$just" ]; then
-
-# Delete everything before the <main> element
-
-sed -i '0,/^<body>$/d' ./"$baseName"/"$baseName".html
-
-sed -i -n '/<footer>/q;p' ./"$baseName"/"$baseName".html
-
-fi
-
-####
 
 done
 
