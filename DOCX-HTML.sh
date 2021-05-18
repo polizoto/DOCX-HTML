@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.6
+# Version 1.7.7
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -12,7 +12,8 @@ function usage (){
     printf "\nUsage: $(baseName "$0") [options [parameters]]\n"
     printf "\n"
     printf "Options:\n"
-    printf " -c, Check for warnings and errors in the terminal. Parameters: off (default is on)\n"
+    printf " -c, Check for warnings and errors in the terminal. Parameters: off (default is on)\n"	
+	printf " -d, Diagnostics. Check that all dependencies are met [Parameters: None]\n"	
 	printf " -e, Edit warnings and errors in the terminal (using Vim).\n"
     printf " -f, Add Footnotes. [Parameters: None]\n"
     printf " -h, Print help\n"
@@ -31,12 +32,12 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.6\n"
+    printf "\nVersion 1.7.7\n"
 
 return 0
 }
 
-while getopts :s:l:im:fc:ejnprhwv flag
+while getopts :s:l:im:fc:ejdnprhwv flag
 
 do
     case "${flag}" in
@@ -48,6 +49,7 @@ do
         exit 2
         fi
 		;;
+		d) diagnostics="${flag}";;
         e) edit="${flag}";
         if ! command -v vim &> /dev/null ; then
         echo -e "\n\033[1;31mVim (the program used for editing files in a terminal) is not available in your path. PLease download Vim (https://www.vim.org/download.php) and make sure it is available in your path. Exiting...\033[0m">&2
@@ -127,6 +129,227 @@ for val in "${language[@]}"; do
             fi
             count=$[ $count +1 ]
 done
+
+if [ -n "$diagnostics" ]; then
+
+USER=$(whoami)
+
+if  command -v git >/dev/null  2>&1; then 
+
+if ! (echo a version 2.31.1; git --version) | sort -Vk3 | tail -1 | grep -q git
+then
+
+basic_dependencies=missing
+
+fi
+
+else
+
+basic_dependencies=missing
+
+fi 
+
+if [ -x "$(command -v pandoc)" ]; then
+
+if ! pandoc -v | (echo a.exe 2.13; pandoc --version | head -1) | sort -Vk2 | tail -1 | grep -q pandoc
+then
+
+basic_dependencies=missing
+
+fi
+
+else
+
+basic_dependencies=missing
+
+fi
+
+if [ ! -f  "C:\stylesheets\standard.css" ]; then
+
+basic_dependencies=missing
+
+fi
+
+# Check if Nu HTML Checker is installed.
+
+if [ ! -f  /c/vnu-runtime-image/bin/vnu.bat ]; then
+
+basic_dependencies=missing
+
+fi
+
+# Check if Tasklist
+
+
+if [ ! -f /c/scripts/tasklist.exe ]; then 
+
+basic_dependencies=missing
+
+fi
+
+if [[ "$basic_dependencies" == "" ]]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Basic Setup" "OK"
+
+fi
+
+if [[ "$basic_dependencies" == "missing" ]]; then
+
+printf "%-15s \e[1;31m%s\e[m\n" "Basic Setup" ""
+
+if  command -v git >/dev/null  2>&1; then 
+
+if (echo a version 2.31.1; git --version) | sort -Vk3 | tail -1 | grep -q git
+then
+    printf "%-15s \e[1;32m%s\e[m\n" "Git" "OK"
+else
+    printf "%-15s \e[1;33m%s\e[m\n" "Git" "Newer version available." 
+	printf "%-15s \e[1;33m%s\e[m\n" "" "Run 'git update-git-for-windows'"
+fi
+
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Git" "Not Found"
+
+fi 
+
+if [ -x "$(command -v pandoc)" ]; then
+
+
+if pandoc -v | (echo a.exe 2.13; pandoc --version | head -1) | sort -Vk2 | tail -1 | grep -q pandoc
+then
+    printf "%-15s \e[1;32m%s\e[m\n" "Pandoc" "OK"
+else
+    printf "%-15s \e[1;33m%s\e[m\n" "Pandoc" "Newer version available." 
+	printf "%-15s \e[1;33m%s\e[m\n" "" "Get the latest: https://pandoc.org/installing.html"
+fi
+
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Pandoc" "Not Found"
+
+fi
+
+if [ ! -f  "C:\stylesheets\standard.css" ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Stylesheet" "OK"
+
+else
+
+printf "%-15s  \e[1;31m%s\e[m\n" "Stylesheet" "Not Found"
+
+
+fi
+
+
+if [ -f  /c/vnu-runtime-image/bin/vnu.bat ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "NuHTML" "OK"
+
+else
+
+printf "%-15s  \e[1;31m%s\e[m\n" "NuHTML" "Not Found"
+
+fi
+
+if [ -f /c/scripts/tasklist.exe ]; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Tasklist" "OK"
+
+else
+
+printf "%-15s  \e[1;31m%s\e[m\n" "Tasklist" "Not Found"
+
+fi
+
+fi
+
+if  ! command -v node >/dev/null  2>&1; then 
+
+math_dependencies=missing
+
+fi
+
+if  ! command -v tex2svg >/dev/null  2>&1; then 
+
+math_dependencies=missing
+
+fi 
+
+if [ ! -d /c/Users/$USER/AppData/Roaming/npm/node_modules/mathjax-node-cli/bin ]; then
+
+math_dependencies=missing
+
+fi
+
+if [ ! -f /c/Users/$USER/AppData/Roaming/npm/node_modules/mathjax-node-sre/bin/mjsre.js ]; then
+
+math_dependencies=missing
+
+fi
+
+
+
+if [[ "$math_dependencies" == "" ]]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Math Setup" "OK"
+
+fi
+
+if [[ "$math_dependencies" == "missing" ]]; then
+
+printf "%-15s \e[1;31m%s\e[m\n" "Math Setup" ""
+
+if  command -v node >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Node.js" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Node.js" "Not Found"
+
+fi
+
+if  command -v tex2svg >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "tex2svg" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "tex2svg" "Not Found"
+
+fi
+
+if [ -d /c/Users/$USER/AppData/Roaming/npm/node_modules/mathjax-node-cli/bin ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "MathJaxCLI" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "MathJaxCLI" "Not Found"
+
+fi
+
+if [ -f /c/Users/$USER/AppData/Roaming/npm/node_modules/mathjax-node-sre/bin/mjsre.js ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "MathJaxSRE" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "MathJaxSRE" "Not Found"
+
+fi
+
+fi
+
+if command -v vim &> /dev/null ; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Vim" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Vim" "Not Found"
+
+fi
+
+exit 1
+
+fi
 
 # Make --mathjax the default math variable when the -m option is not used
 
@@ -1364,6 +1587,43 @@ sed -i 's/<mi>&amp\;<\/mi>//g' ./"$baseName"/"$baseName".html
 sed -i 's/\\\& /\& /g' ./"$baseName"/"$baseName".html
 
 #
+
+# New in 1.7.7
+
+# Correct code for displaying Desmos graphs
+
+sed -i 's/<p>&lt;iframe/<iframe/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/&gt;&lt;\/iframe&gt;<\/p>/><\/iframe>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/frameborder=0//g' ./"$baseName"/"$baseName".html
+
+sed -i 's/500px/500/g' ./"$baseName"/"$baseName".html 
+
+#
+
+# Correct YouTube Embed Code
+
+sed -i 's/frameborder="0"/style="border: 1px solid #ccc"/g'  ./"$baseName"/"$baseName".html 
+
+#
+
+# Correct Amara Embed Code
+
+sed -i 's/<p>&lt;div class="amara/<div class="amara/g' ./"$baseName"/"$baseName".html 
+
+sed -i 's/"null"&gt;&lt;\/div&gt;<\/p>/"null"><\/div>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/<p>https:\/\/amara.org\/en\/videos\//<div class="amara-embed" data-hide-logo="true" data-width="560px" data-initial-language="en" data-show-subtitles-default="true" data-video-id="/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/\/info\/.*\/<\/p>/" data-team="null"><\/div>/g' ./"$baseName"/"$baseName".html
+
+grep -c "data-team=\"null\"" ./"$baseName"/"$baseName".html | sed -i "s/<script /<script src=\"https:\/\/amara.org\/embedder-iframe\"><\/script><script /" ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/<\/script><script/<\/script>\n<script/g' ./"$baseName"/"$baseName".html
+
+#
+
 
 # Blockquotes:
 
