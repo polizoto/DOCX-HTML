@@ -230,7 +230,7 @@ printf "%-15s \e[1;31m%s\e[m\n" "Pandoc" "Not Found"
 
 fi
 
-if [ ! -f  "C:\stylesheets\standard.css" ]; then
+if [ -f  "C:\stylesheets\standard.css" ]; then
 
 printf "%-15s \e[1;32m%s\e[m\n" "Stylesheet" "OK"
 
