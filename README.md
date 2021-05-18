@@ -49,7 +49,7 @@ Note: If you want the script to be available systemwide on a PC, place it in the
 - export new DOCX file for PDF workflows (when using `-p` option), which can be helpful for producing alternative text for math content
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
 - edit HTML directly with VIM in the terminal (when using the `-e` option)
-- Check for correct setup with `-d` option (Diagnostics)
+- check for correct setup with `-d` option (Diagnostics)
 - batch processing
 
 ## Overview
