@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.2.1
+# Version 0.2.2
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -13,6 +13,7 @@ function usage (){
     printf "\n"
     printf "Options:\n"
     printf " -c, Check for warnings and errors in the terminal. Parameters: off (default is on)\n"
+	printf " -d, Diagnostics. Check that all dependencies are met [Parameters: None]\n"	
 	printf " -e, Edit warnings and errors in the terminal (using Vim).\n"
     printf " -f, Add Footnotes. [Parameters: None]\n"
     printf " -h, Print help\n"
@@ -31,12 +32,12 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.2.1\n"
+    printf "\nVersion 0.2.2\n"
 
 return 0
 }
 
-while getopts :s:l:m:fc:enijprhwv flag
+while getopts :s:l:m:fc:enijdprhwv flag
 
 do
     case "${flag}" in
@@ -48,6 +49,7 @@ do
         exit 2
         fi
 		;;
+		d) diagnostics="${flag}";;
         e) edit="${flag}";
         if ! command -v vim &> /dev/null ; then
         echo -e "\n\033[1;31mVim (the program used for editing files in a terminal) is not available in your path. PLease download Vim (https://www.vim.org/download.php) and make sure it is available in your path. Exiting...\033[0m">&2
@@ -123,6 +125,177 @@ for val in "${language[@]}"; do
             fi
             count=$[ $count +1 ]
 done
+
+if [ -n "$diagnostics" ]; then
+
+USER=$(whoami)
+
+if [ -x "$(command -v pandoc)" ]; then
+
+if ! pandoc -v | (echo a.exe 2.13; pandoc --version | head -1) | sort -Vk2 | tail -1 | grep -q pandoc
+then
+
+basic_dependencies=missing
+
+fi
+
+else
+
+basic_dependencies=missing
+
+fi
+
+if [ ! -f ~/stylesheets/standard.css ]; then
+
+basic_dependencies=missing
+
+fi
+
+# Check if Nu HTML Checker is installed.
+
+if [ ! -f  ~/vnu.jar ]; then
+
+basic_dependencies=missing
+
+fi
+
+if [[ "$basic_dependencies" == "" ]]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Basic Setup" "OK"
+
+fi
+
+if [[ "$basic_dependencies" == "missing" ]]; then
+
+printf "%-15s \e[1;31m%s\e[m\n" "Basic Setup" ""
+
+if [ -x "$(command -v pandoc)" ]; then
+
+
+if pandoc -v | (echo a.exe 2.13; pandoc --version | head -1) | sort -Vk2 | tail -1 | grep -q pandoc
+then
+    printf "%-15s \e[1;32m%s\e[m\n" "Pandoc" "OK"
+else
+    printf "%-15s \e[1;33m%s\e[m\n" "Pandoc" "Newer version available." 
+	printf "%-15s \e[1;33m%s\e[m\n" "" "Get the latest: https://pandoc.org/installing.html"
+fi
+
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Pandoc" "Not Found"
+
+fi
+
+if [ -f ~/stylesheets/standard.css ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Stylesheet" "OK"
+
+else
+
+printf "%-15s  \e[1;31m%s\e[m\n" "Stylesheet" "Not Found"
+
+
+fi
+
+
+if [ -f  ~/vnu.jar ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "NuHTML" "OK"
+
+else
+
+printf "%-15s  \e[1;31m%s\e[m\n" "NuHTML" "Not Found"
+
+fi
+
+fi
+
+if  ! command -v node >/dev/null  2>&1; then 
+
+math_dependencies=missing
+
+fi
+
+if ! [ -x "$(command -v tex2svg)" ]; then
+
+math_dependencies=missing
+
+fi 
+
+if [ ! -d /Users/$USER/mathjax-node-cli/bin ]; then
+
+math_dependencies=missing
+
+fi
+
+if [ ! -f /Users/$USER/node_modules/mathjax-node-sre/bin/mjsre.js ]; then
+
+math_dependencies=missing
+
+fi
+
+
+
+if [[ "$math_dependencies" == "" ]]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Math Setup" "OK"
+
+fi
+
+if [[ "$math_dependencies" == "missing" ]]; then
+
+printf "%-15s \e[1;31m%s\e[m\n" "Math Setup" ""
+
+if  command -v node >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Node.js" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Node.js" "Not Found"
+
+fi
+
+if [ -x "$(command -v tex2svg)" ]; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "tex2svg" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "tex2svg" "Not Found"
+
+fi
+
+if [ -d /Users/$USER/mathjax-node-cli/bin ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "MathJaxCLI" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "MathJaxCLI" "Not Found"
+
+fi
+
+if [ -f /Users/$USER/node_modules/mathjax-node-sre/bin/mjsre.js ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "MathJaxSRE" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "MathJaxSRE" "Not Found"
+
+fi
+
+fi
+
+if command -v vim &> /dev/null ; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Vim" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Vim" "Not Found"
+
+fi
+
+exit 1
+
+fi
 
 # Make --mathjax the default math variable when the -m option is not used
 
