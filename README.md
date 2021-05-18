@@ -27,8 +27,8 @@ Note: If you want the script to be available systemwide on a PC, place it in the
 
 ### Optional Setup for processing math equations as `svg` or `mathspeak`:
 1. Install [Nodejs](https://nodejs.org/en/)
-2. Open the terminal and type `npm install -g mathjax-node-cli` and press Enter. Wait for installation to complete. (Note: use `sudo` before the command if you are on macOS)
-3. Open the terminal and type  `npm install -g mathjax-node-sre` and press Enter. Wait for the installation to complete. (Note: use `sudo` before the command if you are on macOS)
+2. Open the terminal and type `npm install -g mathjax-node-cli` and press Enter. Wait for installation to complete. (Note: use `sudo npm install -g mathjax-node-cli` before the command if you are on macOS)
+3. Open the terminal and type  `npm install -g mathjax-node-sre` and press Enter. Wait for the installation to complete. (Note: use `sudo npm install -g mathjax-node-sre` before the command if you are on macOS)
 4. (For PC users) Edit the environmental variables on your machine to include the path to the mathjax-node-cli\bin and node_modules folders, respectively. These should be located here:
 
             C:\Users\YOUR-NAME\AppData\Roaming\npm\node_modules
