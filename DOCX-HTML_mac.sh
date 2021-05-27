@@ -4070,6 +4070,22 @@ perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/\\ / /g' ./"$baseName"/"$baseName"_copy.html
 
+# Use entity codes to avoid Curl error
+
+perl -pi -e 's/%/%25/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/&/%26/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/@/%40/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/&gt;/>/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/&lt;/</g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/\+/%2b/g' ./"$baseName"/"$baseName"_copy.html
+
+#
+
 # Check if there are images in HTML file directory (BEGIN If Loop)
 
 if [ -d ./"$baseName"/media ]; then
@@ -4147,11 +4163,23 @@ rm ./"$baseName"/new_canvas_folder.txt
 
 rm ./"$baseName"/canvas_folder_root.txt
 
+rm ./"$baseName"/canvas_path.txt
+
 fi
 
-canvas_content=`cat ./"$baseName"/"$baseName"_copy.html`
+#
 
-curl -sS -X POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data-urlencode "wiki_page[body]=$canvas_content" > /dev/null
+sed -i '' '1s/^/wiki_page[body]=/' ./"$baseName"/"$baseName"_copy.html
+
+# Cannot Handle Too long files
+
+#canvas_content=`cat ./"$baseName"/"$baseName"_copy.html`
+
+#curl -sS -X -K POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data-urlencode "wiki_page[body]=$canvas_content" > /dev/null
+
+#
+
+curl -sS -X POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data @./"$baseName"/"$baseName"_copy.html > /dev/null
 
 rm ./"$baseName"/"$baseName"_copy.html
 
@@ -4182,8 +4210,6 @@ fi
 echo -e "\033[1;32m"$baseName".html\033[0m was uploaded to the \033[1;44m$path_name\033[0m folder in your \033[1;44m$canvas_course\033[0m Canvas course. \x1B[49m\x1B[K"
 
 fi
-
-rm ./"$baseName"/canvas_path.txt
 
 rm ./"$baseName"/canvas_course.txt
  
