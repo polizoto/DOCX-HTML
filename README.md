@@ -35,6 +35,11 @@ Note: If you want the script to be available systemwide on a PC, place it in the
           
             C:\Users\YOUR-NAME\AppData\Roaming\npm\node_modules\mathjax-node-cli\bin
 
+### Optional Setup for uploading files to Canvas (`-u` Option):
+1. Download `canvas_token.txt` files and place in "scripts" folder (`C:\scripts\` for PC or `~/scripts/` for macOS)
+2. Enter your Canvas API key on line two of `canvas_token.txt` (From your Canvas account, go to Settings and click on the + New Access Token button.)
+3. Enter your Canvas domain on line four of `canvas_token.txt` (e.g., bcourses.berkeley.edu)
+
 ## Features
 - Table of contents (Headings 1-3)
 - language switches are automatically added (`lang` attribute) when using the `-l` option. Up to nine secondary languages
@@ -50,6 +55,7 @@ Note: If you want the script to be available systemwide on a PC, place it in the
 - receive HTML accessibility warnings and errors in the terminal (NuHTML checker)
 - edit HTML directly with VIM in the terminal (when using the `-e` option)
 - check for correct setup with `-d` option (Diagnostics)
+- upload files directly to Canvas LMS, as a course page or into Files area (when using the `-u` option)
 - batch processing
 
 ## Overview
