@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.2.2
+# Version 0.2.3
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -26,18 +26,19 @@ function usage (){
 	printf " -r, Remove markup (e.g., MS Word hyperlinks). [Parameters: None]\n"
     printf " -s, Specify a stylesheet.[Parameters: Name of stylesheet (default: standard.css)]\n"
 	printf " -w, Check if Word is running (using tasklist) and move all DOCX files to converted DOCX-HTML folder after conversion.[Parameters: None]\n"
+    printf " -u, Upload HTML file to Canvas LMS (requires class number and user's API key).[Parameters: None]\n"
     printf " -v, Print script version\n"
 
 return 0
 }
 
 function version (){
-    printf "\nVersion 0.2.2\n"
+    printf "\nVersion 0.2.3\n"
 
 return 0
 }
 
-while getopts :s:l:m:fc:enijdprhwv flag
+while getopts :s:l:m:fc:enijdprhwuv flag
 
 do
     case "${flag}" in
@@ -82,6 +83,7 @@ do
 		r) remove="${flag}";;
 		w) word="${flag}";;
         \?) echo -e "Invalid option\n";usage; exit 2;;
+        u) upload="${flag}";;
         v) version; exit 2;;
         h) usage; exit 2;;
         \?) echo -e "Invalid option\n";usage; exit 2;;
@@ -293,9 +295,122 @@ printf "%-15s \e[1;31m%s\e[m\n" "Vim" "Not Found"
 
 fi
 
+if [ -f ~/scripts/canvas_token.txt ]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Canvas Token" "OK"
+
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Canvas Token" "Not Found"
+
+fi
+
 exit 1
 
 fi
+
+##
+
+if [ -n "$upload" ]; then
+
+if [ ! -f ~/scripts/canvas_token.txt ]; then
+
+echo -e "\n\033[1;31mError: Could not find canvas_token.txt file in ~/scripts/ folder. Exiting..." >&2
+
+exit 1
+
+fi
+
+token=`cat ~/scripts/canvas_token.txt | sed -n 2p`
+
+if [[ "$token" == "" ]]; then
+
+echo -e "\n\033[1;31mError: No API token found on line 2 of canvas_token.txt. Copy and paste the API token to line 2. Exiting..." >&2
+
+exit 1
+
+fi
+
+canvas_domain=`cat ~/scripts/canvas_token.txt | sed -n 4p`
+
+if [[ "$canvas_domain" == "" ]]; then
+
+echo -e "\n\033[1;31mError: No Canvas domain found on line 4 of canvas_token.txt. Copy and paste the Canvas domain to line 4. Exiting..." >&2
+
+exit 1
+
+fi
+
+echo -ne '\n'
+
+read -p "Enter the course number of the Canvas course where you wish to post the HTML file:  " class_number
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./canvas_test.txt
+
+if 	grep -q 'Invalid' ./canvas_test.txt ; then
+
+echo -e "\033[1;31mError: Invalid API token. Check API token in ~/scripts/canvas_token.txt.\033[0m"
+
+rm ./canvas_test.txt
+
+exit 1
+
+fi
+
+if 	grep -q 'resolve' ./canvas_test.txt ; then
+
+echo -e "\033[1;31mError: Could not find Canvas domain. Check Canvas domain in ~/scripts/canvas_token.txt. Exiting...\033[0m"
+
+rm ./canvas_test.txt
+
+exit 1
+
+fi 
+
+if 	grep -q 'exist' ./canvas_test.txt  ; then
+
+echo -e "\033[1;31mError: Invalid course number. Check Canvas course number. Exiting...\033[0m"
+
+rm ./canvas_test.txt 
+
+exit 1
+
+fi 
+
+echo -ne "\n"
+
+while true; do
+
+read -n1 -p "Do you wish to upload the file as a course page [1] or to the Files area [2] in Canvas? [1/2]?" answer
+
+case $answer in
+1 ) 
+       course_page=yes
+       echo -ne "\n"
+       break
+	   ;;
+	   
+2 ) 
+       course_page=no
+       echo -ne "\n"
+       break
+	   ;;	
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ 1 / 2].\033[0m\n"
+	   ;;
+
+	   
+esac
+
+done
+
+rm ./canvas_test.txt
+
+fi
+
+
+##
 
 # Make --mathjax the default math variable when the -m option is not used
 
@@ -516,11 +631,45 @@ cp  "$x" ./"$baseName"_edited.docx 2> /dev/null
 
 rm ./~*.docx 2> /dev/null 
 
+#
+
+if [ -n "$upload" ]; then
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number -H 'Authorization: Bearer '$token'' | sed 's/.*"name":"//g' | sed 's/",.*//g' > ./"$baseName"/canvas_course.txt
+
+canvas_course=`cat ./"$baseName"/canvas_course.txt`
+
+if [[ $course_page == "no" ]]; then
+
+echo -ne '\n'
+
+read -p "Enter the folder in the Canvas course where you wish to post the HTML file (Use / after each parent folder OR just press Enter/Return to place the HTML file in the Files area OR type 'same' to create a folder with the same name as the HTML file:  " canvas_path_name
+
+if [[ "$canvas_path_name" == "same" ]]; then 
+
+canvas_path_name=$baseName
+
+fi
+
+fi
+
+fi
+
 # Create HTML File
 		
 echo -e "\nConverting \033[1;35m"$baseName".docx\033[0m to \033[1;32m"$baseName".html\033[0m..."
 
+if [[ $course_page == "yes" ]]; then
+
 pandoc "$baseName"_edited.docx -s -t html5 --metadata pagetitle="$baseName" --toc --toc-depth=3 -M document-css=false -H ~/stylesheets/"$stylesheet".css --"$math" --extract-media=./"$baseName" -o ./"$baseName"/"$baseName".html
+
+else
+
+pandoc "$baseName"_edited.docx --"$math" --self-contained -t html5 --metadata pagetitle="$baseName" --toc --toc-depth=3 -M document-css=false -H ~/stylesheets/"$stylesheet".css -o ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/(src="data:application\/javascript;.*)("><\/script>)/src="https:\/\/cdn.jsdelivr.net\/npm\/mathjax@3\/es5\/tex-chtml-full.js$2/g' ./"$baseName"/"$baseName".html
+
+fi
 
 # Correct HTML Title Name
 
@@ -531,6 +680,8 @@ sed -i '' 's/_edited<\/title>/<\/title>/g' ./"$baseName"/"$baseName".html
 sed -i '' 's/xml:lang=""//g' ./"$baseName"/"$baseName".html
 
 sed -i '' 's/lang=""/lang="en"/g' ./"$baseName"/"$baseName".html
+
+sed -i '' 's/lang xml:lang/lang="en"/g' ./"$baseName"/"$baseName".html
         
 # Clean up Invalid HTML
 	
@@ -571,7 +722,7 @@ sed -i '' 's/\^\^\^/<span class="dashed">/g' ./"$baseName"/"$baseName".html
 		
 # Perform Find and Replace in HTML for text that has double underline formatting (+++)
 		
-sed -i '' 's/+++/<span class="doubleunderline">/g' ./"$baseName"/"$baseName".html
+# sed -i '' 's/+++/<span class="doubleunderline">/g' ./"$baseName"/"$baseName".html
 		
 # Perform Find and Replace in HTML for text that has highlight formatting (~~~)
 		
@@ -3875,6 +4026,167 @@ else
     
     echo -e "\nA copy of \033[1;35m"$baseName".docx\033[0m was moved to the \033[1;44mConverted-DOCX-HTML\033[0m folder.\x1B[49m\x1B[K"
 
+fi
+
+# Create folder in Canvas
+
+if [ -n "$upload" ]; then
+
+if [[ $course_page == "no" ]]; then
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$baseName.html" -F 'content_type=text/html' -F "parent_folder_path=$canvas_path_name" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt
+
+canvas_path=`cat ./"$baseName"/canvas_path.txt`
+ 
+# Upload HTML file to Canvas Files Area
+ 
+curl -sS $canvas_path -F "filename=$baseName.html" -F "file=@./$baseName/$baseName.html" > /dev/null
+
+fi
+
+# Upload HTML to Course Page
+
+if [[ $course_page == "yes" ]]; then
+
+cp ./"$baseName"/"$baseName".html ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/(alt=")(.*)(")/alt=$2/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e "s/alt=/alt='/g" ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e "s/ \/>/' \/>/g" ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/(style=")(.*)(")/style=$2/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e "s/style=/style='/g" ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e "s/in alt=/in' alt=/g" ./"$baseName"/"$baseName"_copy.html
+
+awk '/<body>/{p=1;next}{if(p){print}}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+awk '/<footer>/ {exit} {print}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/\\ / /g' ./"$baseName"/"$baseName"_copy.html
+
+# Check if there are images in HTML file directory (BEGIN If Loop)
+
+if [ -d ./"$baseName"/media ]; then
+
+echo -ne "\nUploading files to Canvas...\n"
+
+# Get Root Directory
+
+curl  -sS https://$canvas_domain/api/v1/courses/$class_number/folders/root -H 'Authorization: Bearer '$token'' | sed 's/.*"id"://' | sed 's/,.*//g' > ./"$baseName"/canvas_folder_root.txt
+
+# Assign Root Folder ID as variable
+
+canvas_folder_root=`cat ./"$baseName"/canvas_folder_root.txt`
+
+# Create Folder
+#curl https://$canvas_domain/api/v1/courses/$class_number/folders -F "name=images - course pages" -F "parent_folder_id=$canvas_folder_root" -H 'Authorization: Bearer '$token'' | sed 's/.*"id"://' | sed 's/,.*//g' > ./"$baseName"/new_canvas_folder.txt
+
+curl  -sS https://$canvas_domain/api/v1/courses/$class_number/folders -F "name=$baseName" -H 'Authorization: Bearer '$token'' | sed 's/.*"id"://' | sed 's/,.*//g' > ./"$baseName"/new_canvas_folder.txt
+
+# Assign NEW Folder ID as variable
+
+new_canvas_folder=`cat ./"$baseName"/new_canvas_folder.txt`
+
+# LOOP to add images to New Folder (NESTED in IF Statement for if there is media folder)
+
+counter_image=1
+for x in ./"$baseName"/media/image*; do
+        basePath=${x%}
+        Name=${basePath##*/}
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$Name" -F 'content_type=image/png' -F "parent_folder_id=$new_canvas_folder" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt 
+
+canvas_path=`cat ./"$baseName"/canvas_path.txt`
+
+curl -sS $canvas_path -F "filename=$Name" -F "file=@./$baseName/media/$Name" > /dev/null
+
+counter_image=$[ $counter_image + 1 ] ; 
+done
+
+
+# Get list of images in the the NEW Folder
+
+curl -sS https://$canvas_domain/api/v1/folders/$new_canvas_folder/files\?include=items\&per_page=100 -H 'Authorization: Bearer '$token'' > ./"$baseName"/canvas_images.txt
+
+perl -pi -e 's/https:\/\/'$canvas_domain'\/files\//\n@@ https:\/\/'$canvas_domain'\/files\//g' ./"$baseName"/canvas_images.txt
+
+perl -pi -e 's/(\d+)(\/download?.*)/$1\/download" data-api-endpoint="https:\/\/'$canvas_domain'\/api\/v1\/courses\/'$class_number'\/files\/$1" data-api-returntype="File"/g' ./"$baseName"/canvas_images.txt
+
+perl -pi -e 's/\[\{"id".*\n//g' ./"$baseName"/canvas_images.txt
+
+perl -pi -e 's/\\//g' ./"$baseName"/canvas_images.txt
+
+mv ./"$baseName"/canvas_images.txt ./
+
+perl -pi -e 's/src="/$1\n@@/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/(@@.*")( style)/@@\n$2/g' ./"$baseName"/"$baseName"_copy.html
+
+awk '
+    /^@@/{                   
+        getline <"./canvas_images.txt" 
+    }
+    1                      
+    ' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+rm ./canvas_images.txt
+
+perl -pi -e 's/@@ /src="/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/frd=1/frd=1"/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
+
+rm ./"$baseName"/new_canvas_folder.txt
+
+rm ./"$baseName"/canvas_folder_root.txt
+
+fi
+
+canvas_content=`cat ./"$baseName"/"$baseName"_copy.html`
+
+curl -sS -X POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data-urlencode "wiki_page[body]=$canvas_content" > /dev/null
+
+rm ./"$baseName"/"$baseName"_copy.html
+
+echo -ne '\n'
+
+echo -e "\033[1;32m"$baseName".html\033[0m was uploaded to \033[1;44m$canvas_course\033[0m Canvas course as a course page. \x1B[49m\x1B[K"
+
+fi
+
+#
+
+if [[ $course_page == "no" ]]; then
+
+echo -ne '\n'
+
+
+
+if [[ $canvas_path_name == "" ]]; then
+
+path_name="Files Area"
+
+else
+
+path_name=$canvas_path_name
+
+fi
+
+echo -e "\033[1;32m"$baseName".html\033[0m was uploaded to the \033[1;44m$path_name\033[0m folder in your \033[1;44m$canvas_course\033[0m Canvas course. \x1B[49m\x1B[K"
+
+fi
+
+rm ./"$baseName"/canvas_path.txt
+
+rm ./"$baseName"/canvas_course.txt
+ 
 fi
 
 done

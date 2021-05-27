@@ -1,0 +1,4 @@
+# Enter your Canvas API key below:
+###### PASTE API KEY HERE ########
+# Enter your Canvas domain below:
+###### PASTE DOMAIN HERE ########
