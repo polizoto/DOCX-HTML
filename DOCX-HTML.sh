@@ -4265,8 +4265,6 @@ rm ./"$baseName"/new_canvas_folder.txt
 
 rm ./"$baseName"/canvas_folder_root.txt
 
-rm ./"$baseName"/canvas_path.txt
-
 fi
 
 #
@@ -4337,6 +4335,14 @@ path_name=$canvas_path_name
 fi
 
 echo -e "\033[1;32m"$baseName".html\033[0m was uploaded to the \033[1;44m$path_name\033[0m folder in your \033[1;44m$canvas_course\033[0m Canvas course. \x1B[49m\x1B[K"
+
+fi
+
+# New
+
+if [ -f ./"$baseName"/canvas_path.txt ]; then
+
+rm ./"$baseName"/canvas_path.txt
 
 fi
 
