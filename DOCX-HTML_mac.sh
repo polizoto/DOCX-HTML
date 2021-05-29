@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.2.3
+# Version 0.2.4
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -33,7 +33,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.2.3\n"
+    printf "\nVersion 0.2.4\n"
 
 return 0
 }
@@ -349,7 +349,7 @@ curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -H 'Authoriza
 
 if 	grep -q 'Invalid' ./canvas_test.txt ; then
 
-echo -e "\033[1;31mError: Invalid API token. Check API token in ~/scripts/canvas_token.txt.\033[0m"
+echo -e "\n\033[1;31mError: Invalid API token. Check API token in ~/scripts/canvas_token.txt.\033[0m"
 
 rm ./canvas_test.txt
 
@@ -359,7 +359,7 @@ fi
 
 if 	grep -q 'resolve' ./canvas_test.txt ; then
 
-echo -e "\033[1;31mError: Could not find Canvas domain. Check Canvas domain in ~/scripts/canvas_token.txt. Exiting...\033[0m"
+echo -e "\n\033[1;31mError: Could not find Canvas domain. Check Canvas domain in ~/scripts/canvas_token.txt. Exiting...\033[0m"
 
 rm ./canvas_test.txt
 
@@ -369,7 +369,7 @@ fi
 
 if 	grep -q 'exist' ./canvas_test.txt  ; then
 
-echo -e "\033[1;31mError: Invalid course number. Check Canvas course number. Exiting...\033[0m"
+echo -e "\n\033[1;31mError: Invalid course number. Check Canvas course number. Exiting...\033[0m"
 
 rm ./canvas_test.txt 
 
@@ -634,6 +634,14 @@ rm ./~*.docx 2> /dev/null
 #
 
 if [ -n "$upload" ]; then
+
+if [[ "$SVG" == "on" ]]; then
+
+course_page=no
+
+echo -e "\n\033[1;33mATTENTION:\033[0m Canvas currently does not support SVG images. \033[1;32m"$baseName".html\033[0m will be uploaded as a standalone HTML file..."
+
+fi
 
 curl -sS https://$canvas_domain/api/v1/courses/$class_number -H 'Authorization: Bearer '$token'' | sed 's/.*"name":"//g' | sed 's/",.*//g' > ./"$baseName"/canvas_course.txt
 
@@ -1667,17 +1675,54 @@ perl -0777 -pi -e 's/(<\/figure>.*\n)(.*<aside role="note")/\n$2/g' ./"$baseName
 
 sed -i '' 's/\(\\text{.*\)\\ \(.*}\)/\1 \2/g' ./"$baseName"/"$baseName".html
 
-## New in 0.1.7
+## New in 0.2.4
 
 #
 
 # Find and replace the &amp; with &
 
-sed -i '' 's/&amp\; /\& /g' ./"$baseName"/"$baseName".html
+perl -pi -e 's/&amp\; /\& /g' ./"$baseName"/"$baseName".html
 
-sed -i '' 's/<mi>&amp\;<\/mi>//g' ./"$baseName"/"$baseName".html
+perl -pi -e 's/<mi>&amp\;<\/mi>//g' ./"$baseName"/"$baseName".html
 
-sed -i '' 's/\\\& /\& /g' ./"$baseName"/"$baseName".html
+perl -pi -e 's/\\\& /\& /g' ./"$baseName"/"$baseName".html
+
+# Correct code for displaying Desmos graphs
+
+perl -pi -e 's/<p>&lt;iframe/<iframe/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/&gt;&lt;\/iframe&gt;<\/p>/><\/iframe>/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/frameborder=0//g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/500px/500/g' ./"$baseName"/"$baseName".html 
+
+#
+
+# Correct YouTube Embed Code
+
+perl -pi -e 's/frameborder="0"/style="border: 1px solid #ccc"/g'  ./"$baseName"/"$baseName".html 
+
+#
+
+# Correct Amara Embed Code
+
+perl -pi -e 's/<p>&lt;div class="amara/<div class="amara/g' ./"$baseName"/"$baseName".html 
+
+perl -pi -e 's/"null"&gt;&lt;\/div&gt;<\/p>/"null"><\/div>/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/<p>https:\/\/amara.org\/en\/videos\//<div class="amara-embed" data-hide-logo="true" data-width="560px" data-initial-language="en" data-show-subtitles-default="true" data-video-id="/g' ./"$baseName"/"$baseName".html
+
+# Problematic - did not work on macOS...trying Perl
+
+#sed -i '' 's/\/info\/.*\/<\/p>/" data-team="null"><\/div>/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/\/info\/.*\/<\/p>/" data-team="null"><\/div>/g' ./"$baseName"/"$baseName".html
+
+#
+grep -c "data-team=\"null\"" ./"$baseName"/"$baseName".html | sed -i '' "s/<script /<script src=\"https:\/\/amara.org\/embedder-iframe\"><\/script><script /" ./"$baseName"/"$baseName".html
+#
+perl -0777 -pi -e 's/<\/script><script/<\/script>\n<script/g' ./"$baseName"/"$baseName".html
 
 #
 
@@ -3432,6 +3477,12 @@ sed -i '' '/@@/s/right-parenthesis/ /g' ./"$baseName"/"$baseName".html
 sed -i '' '/@@/s/ comma //g' ./"$baseName"/"$baseName".html
 
 ###
+
+# NEW
+ 
+perl -0777 -pi -e 's/(<img.*)(base64.*)(\n@@)/\n@@/g' ./"$baseName"/"$baseName".html
+ 
+#
   
 # Replace placeholder text
 
@@ -4050,18 +4101,6 @@ if [[ $course_page == "yes" ]]; then
 
 cp ./"$baseName"/"$baseName".html ./"$baseName"/"$baseName"_copy.html
 
-perl -pi -e 's/(alt=")(.*)(")/alt=$2/g' ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e "s/alt=/alt='/g" ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e "s/ \/>/' \/>/g" ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e 's/(style=")(.*)(")/style=$2/g' ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e "s/style=/style='/g" ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e "s/in alt=/in' alt=/g" ./"$baseName"/"$baseName"_copy.html
-
 awk '/<body>/{p=1;next}{if(p){print}}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
 
 awk '/<footer>/ {exit} {print}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
@@ -4070,13 +4109,29 @@ perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/\\ / /g' ./"$baseName"/"$baseName"_copy.html
 
+#
+
+# Extract LaTeX equations to avoid URL encoding change step
+
+perl -pi -e 's/src="https:\/\/latex/\n~#%src="https:\/\/latex/g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/(^~#%[^\s]+)/$1\n/g' ./"$baseName"/"$baseName"_copy.html
+
+sed -n 's/\(^~#%\)\(.*\)/\2/p' ./"$baseName"/"$baseName"_copy.html > ./display-log.txt
+
+# Add String to beginning of each line
+
+sed -i '' -e 's/^/@@ /' ./display-log.txt
+
+perl -pi -e 's/(^~#%)/@@ /g' ./"$baseName"/"$baseName"_copy.html
+
+#
+
 # Use entity codes to avoid Curl error
 
 perl -pi -e 's/%/%25/g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/&/%26/g' ./"$baseName"/"$baseName"_copy.html
-
-perl -pi -e 's/@/%40/g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/&gt;/>/g' ./"$baseName"/"$baseName"_copy.html
 
@@ -4084,7 +4139,23 @@ perl -pi -e 's/&lt;/</g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/\+/%2b/g' ./"$baseName"/"$baseName"_copy.html
 
+# Add LaTeX base64 images back into the file
+
+awk '
+    /^@@/{                   
+        getline <"./display-log.txt"
+    }
+    1                      
+    ' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName"_copy.html
+
+# Change @ character to URL Encoding
+
+perl -pi -e 's/@/%40/g' ./"$baseName"/"$baseName"_copy.html
 #
+	
+rm ./display-log.txt
 
 # Check if there are images in HTML file directory (BEGIN If Loop)
 
@@ -4140,6 +4211,12 @@ perl -pi -e 's/\\//g' ./"$baseName"/canvas_images.txt
 
 mv ./"$baseName"/canvas_images.txt ./
 
+# Prevent Latex base64 files from being extracted
+
+perl -pi -e 's/src="https:\/\/latex/srcl="https:\/\/latex/g' ./"$baseName"/"$baseName"_copy.html
+
+#
+
 perl -pi -e 's/src="/$1\n@@/g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/(@@.*")( style)/@@\n$2/g' ./"$baseName"/"$baseName"_copy.html
@@ -4155,6 +4232,12 @@ rm ./canvas_images.txt
 
 perl -pi -e 's/@@ /src="/g' ./"$baseName"/"$baseName"_copy.html
 
+# Add the correct code for LaTex base64 files
+
+perl -pi -e 's/srcl="https:\/\/latex/src="https:\/\/latex/g' ./"$baseName"/"$baseName"_copy.html
+
+#
+
 perl -pi -e 's/frd=1/frd=1"/g' ./"$baseName"/"$baseName"_copy.html
 
 perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
@@ -4163,21 +4246,38 @@ rm ./"$baseName"/new_canvas_folder.txt
 
 rm ./"$baseName"/canvas_folder_root.txt
 
-rm ./"$baseName"/canvas_path.txt
-
 fi
 
 #
 
-sed -i '' '1s/^/wiki_page[body]=/' ./"$baseName"/"$baseName"_copy.html
+perl -pi -e 's/<img/\n<img/g' ./"$baseName"/"$baseName"_copy.html
 
-# Cannot Handle Too long files
+perl -pi -e 's/(^<img[^>]+)/$1\n/g' ./"$baseName"/"$baseName"_copy.html
 
-#canvas_content=`cat ./"$baseName"/"$baseName"_copy.html`
+sed -n 's/\(^<img\)\(.*\)/<img\2/p' ./"$baseName"/"$baseName"_copy.html > ./display-log.txt
 
-#curl -sS -X -K POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data-urlencode "wiki_page[body]=$canvas_content" > /dev/null
+sed -i '' -e 's/^/@@ /' ./display-log.txt
+
+sed -i '' -e "s/\"/'/g" ./display-log.txt
+
+perl -pi -e 's/(^<img)/@@ <img/g' ./"$baseName"/"$baseName"_copy.html
+
+awk '
+    /^@@/{                   
+        getline <"./display-log.txt"
+    }
+    1                      
+    ' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName"_copy.html
+
+perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
+
+rm ./display-log.txt
 
 #
+
+sed -i '' '1s/^/wiki_page[body]=/' ./"$baseName"/"$baseName"_copy.html
 
 curl -sS -X POST -H "Authorization: Bearer $token" https://$canvas_domain/api/v1/courses/$class_number/pages --data-urlencode "wiki_page[title]=$baseName" --data @./"$baseName"/"$baseName"_copy.html > /dev/null
 
@@ -4208,6 +4308,14 @@ path_name=$canvas_path_name
 fi
 
 echo -e "\033[1;32m"$baseName".html\033[0m was uploaded to the \033[1;44m$path_name\033[0m folder in your \033[1;44m$canvas_course\033[0m Canvas course. \x1B[49m\x1B[K"
+
+fi
+
+# New
+
+if [ -f ./"$baseName"/canvas_path.txt ]; then
+
+rm ./"$baseName"/canvas_path.txt
 
 fi
 
