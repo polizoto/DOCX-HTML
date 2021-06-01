@@ -309,6 +309,34 @@ exit 1
 
 fi
 
+#
+
+if [ -n "$upload" ]; then
+
+if ! curl --silent --head http://www.google.com/ | egrep "Set-Cookie" >/dev/null ; then echo -e "\n\033[1;31mCannot establish Internet connection necessary for uploading file Canvas. Connect to Internet and try again. Exiting..." ; exit 1 ; fi
+
+fi
+
+if [[ "$math" == "webtex" ]]; then 
+
+if ! curl --silent --head http://www.google.com/ | egrep "Set-Cookie" >/dev/null ; then echo -e "\n\033[1;31mCannot establish Internet connection necessary for converting math to webtex. Connect to Internet and try again. Exiting..." ; exit 1 ; fi
+
+fi
+
+if [[ "$math" == "svg" ]]; then 
+
+if ! curl --silent --head http://www.google.com/ | egrep "Set-Cookie" >/dev/null ; then echo -e "\n\033[1;31mCannot establish Internet connection necessary for converting math to svg. Connect to Internet and try again. Exiting..." ; exit 1 ; fi
+
+fi
+
+if [[ "$math" == "mathspeak" ]]; then 
+
+if ! curl --silent --head http://www.google.com/ | egrep "Set-Cookie" >/dev/null ; then echo -e "\n\033[1;31mCannot establish Internet connection necessary for converting math to mathspeak. Connect to Internet and try again. Exiting..." ; exit 1 ; fi
+
+fi
+
+#
+
 ##
 
 if [ -n "$upload" ]; then
@@ -2785,6 +2813,14 @@ perl -0777 -pi -e 's/(\n)(title=".*" )(class="math)/" $3/g' ./"$baseName"/"$base
 # Place title text back in correct place if there are footnotes in the document
 
 perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
+
+# NEW (0.2.5)
+# Remove Figure elements from webtex equations
+
+perl -pi -e 's/(<figure>)(.*class=\"math display\" \/>)(<\/figure>)/$2/g' ./"$baseName"/"$baseName".html
+
+
+#
 
 fi
 
