@@ -2824,6 +2824,12 @@ perl -0777 -pi -e 's/(\n)(title=".*" )(class="math)/" $3/g' ./"$baseName"/"$base
 
 perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 
+# NEW 
+# Remove Figure elements from webtex equations
+
+perl -pi -e 's/(<figure>)(.*class=\"math display\" \/>)(<\/figure>)/$2/g' ./"$baseName"/"$baseName".html
+
+
 fi
 
 fi
