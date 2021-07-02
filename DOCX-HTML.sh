@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.7.9
+# Version 1.8.0
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -33,7 +33,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.7.9\n"
+    printf "\nVersion 1.8.0\n"
 
 return 0
 }
@@ -2238,6 +2238,12 @@ sed -i 's/^-/ -/g' ./display-log.txt
 
 perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
 
+# NEW
+
+perl -pi -e 's/&gt;/\\lt/g' ./display-log.txt
+
+#
+
 perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
 
 perl -pi -e 's/&amp;/&/g' ./display-log.txt
@@ -2286,6 +2292,8 @@ sed -i 's/\xe2\x80\x8d//g' ./display-log.txt
 sed -i 's/\\%/%/g'  ./display-log.txt
 
 perl -CD -i -wpe 's/\N{REPLACEMENT CHARACTER}//g' ./display-log.txt
+
+# cp ./display-log.txt ./test-equation.txt
 
 # End New
 
@@ -2736,7 +2744,7 @@ perl -CD -i -wpe 's/\N{SYNCHRONOUS IDLE}//g' ./display-log2.txt
 
 else
 
-echo -ne '\n'
+echo -ne '\n' 
 
 count=$1
 while IFS="" read -r p || [ -n "$p" ] ; do echo -ne "Processing equations... \033[1;33m$count\033[0m\r" ; tex2svg "$p" | sed -n 's/.*1-Title">//p' >> display-log2.txt ; count=$[ $count + 1 ] ; done <./display-log.txt
@@ -4019,6 +4027,14 @@ sed -i -e 's/<div class=\"table-container\" tabindex=\"0\">//g' ./"$baseName"/"$
 if [[ "$math" == "webtex" ]]; then 
 
 sed -i -r 's/title="[^"]*" //g'  ./"$baseName"/"$baseName"_pdf.html
+
+# NEW 1.8.0
+
+sed -i 's/<figure>//g'  ./"$baseName"/"$baseName"_pdf.html
+
+sed -i 's/<\/figure>//g'  ./"$baseName"/"$baseName"_pdf.html
+
+#
 
 fi 
 
