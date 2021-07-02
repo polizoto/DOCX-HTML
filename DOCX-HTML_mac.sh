@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 0.2.4
+# Version 0.2.6
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options and parameters 3) Press ENTER.
 # This script is designed to run on a macOS device
  
@@ -12,6 +12,7 @@ function usage (){
     printf "Usage: $(baseName $0) [options [parameters]]\n"
     printf "\n"
     printf "Options:\n"
+    printf " -a, Create audio file. Parameters: None]\n"
     printf " -c, Check for warnings and errors in the terminal. Parameters: off (default is on)\n"
 	printf " -d, Diagnostics. Check that all dependencies are met [Parameters: None]\n"	
 	printf " -e, Edit warnings and errors in the terminal (using Vim).\n"
@@ -33,17 +34,18 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 0.2.4\n"
+    printf "\nVersion 0.2.6\n"
 
 return 0
 }
 
-while getopts :s:l:m:fc:enijdprhwuv flag
+while getopts :s:l:m:fc:enijadprhwuv flag
 
 do
     case "${flag}" in
 		: ) echo -e "\nOption -"$OPTARG" requires an argument." >&2
             exit 1;;
+        a) audio="${flag}";;
         s) stylesheet=${OPTARG};
         if [ ! -f ~/stylesheets/"$stylesheet".css ]; then
         echo -e "\n\033[1;31mCould not locate \033[1;35m"$stylesheet".css. \033[0m\033[1;31mPlace the stylesheet in \033[0m\033[1;44m~/stylesheets/\033[0m\033[1;31m and run the script again. If the name of the stylesheet has spaces, place double quotes around the name. Exiting...\033[0m">&2
@@ -129,6 +131,8 @@ for val in "${language[@]}"; do
 done
 
 if [ -n "$diagnostics" ]; then
+
+echo -ne "\n"
 
 USER=$(whoami)
 
@@ -286,6 +290,78 @@ fi
 
 fi
 
+if ! command -v lame &> /dev/null ; then
+
+audio_dependencies=missing
+
+fi
+
+if ! command -v say &> /dev/null ; then
+
+audio_dependencies=missing
+
+fi
+
+if ! command -v python &> /dev/null ; then
+
+audio_dependencies=missing
+
+fi
+
+if ! command -v aeneas_execute_task &> /dev/null ; then
+
+audio_dependencies=missing
+
+fi
+
+if [[ "$audio_dependencies" == "" ]]; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Audio Setup" "OK"
+
+fi
+
+if [[ "$audio_dependencies" == "missing" ]]; then
+
+printf "%-15s \e[1;31m%s\e[m\n" "Audio Setup" ""
+
+if  command -v lame >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Lame" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Lame" "Not Found"
+
+fi
+
+if  command -v say >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Say" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Say" "Not Found"
+
+fi
+
+if  command -v python >/dev/null  2>&1; then 
+
+printf "%-15s \e[1;32m%s\e[m\n" "Python" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Python" "Not Found"
+
+fi
+
+if ! command -v aeneas_execute_task &> /dev/null ; then
+
+printf "%-15s \e[1;32m%s\e[m\n" "Aeneas" "OK"
+else
+
+printf "%-15s \e[1;31m%s\e[m\n" "Aeneas" "Not Found"
+
+fi
+
+fi
+
 if command -v vim &> /dev/null ; then
 
 printf "%-15s \e[1;32m%s\e[m\n" "Vim" "OK"
@@ -304,6 +380,7 @@ else
 printf "%-15s \e[1;31m%s\e[m\n" "Canvas Token" "Not Found"
 
 fi
+
 
 exit 1
 
@@ -437,14 +514,55 @@ rm ./canvas_test.txt
 
 fi
 
+#
+
+if [ -n "$audio" ]; then
+
+if ! command -v lame &> /dev/null ; then
+
+echo -e "\n\033[1;31mError: Lame not found (http://macappstore.org/lame/). Exiting..." >&2
+
+fi
+
+if ! command -v say &> /dev/null ; then
+
+echo -e "\n\033[1;31mError: Say command not found. Exiting..." >&2
+
+fi
+
+if ! command -v python &> /dev/null ; then
+
+echo -e "\n\033[1;31mError: Python not found. Exiting..." >&2
+
+fi
+
+if ! command -v aeneas_execute_task &> /dev/null ; then
+
+echo -e "\n\033[1;31mError: Aeneas not found (https://github.com/sillsdev/aeneas-installer/releases). Exiting..." >&2
+
+fi
+
+fi
+
+#
 
 ##
 
 # Make --mathjax the default math variable when the -m option is not used
 
-        if [[ "$math" == "" ]]; then 
-         math=mathjax        
-        fi
+if [[ "$math" == "" ]]; then 
+math=mathjax        
+fi
+
+if [ -n "$audio" ]; then
+
+if [[ ! "$math" == "mathspeak" ]]; then
+
+math=mathspeak
+
+fi
+
+fi
 
 if [[ "$math" == "webtex" ]]; then 
 
@@ -2225,6 +2343,12 @@ sed -i '' 's/^-/ -/g' ./display-log.txt
 # Remove comma within equations
 
 perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+
+# NEW
+
+perl -pi -e 's/&gt;/\\gt/g' ./display-log.txt
+
+#
 
 perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
 
@@ -4031,6 +4155,14 @@ if [[ "$math" == "webtex" ]]; then
 # sed -i '' -r 's/title="[^"]*" //g'  ./"$baseName"/"$baseName"_pdf.html
 sed -i '' 's/title="[^"]*" //g'  ./"$baseName"/"$baseName"_pdf.html
 
+# New
+
+sed -i '' 's/<figure>//g'  ./"$baseName"/"$baseName"_pdf.html
+
+sed -i '' 's/<\/figure>//g'  ./"$baseName"/"$baseName"_pdf.html
+
+#
+
 fi 
 
 if [ -n "$SVG" ]; then
@@ -4115,6 +4247,88 @@ else
 
 fi
 
+###
+
+if [ -n "$audio" ]; then
+
+USER=$(whoami)
+
+pandoc -f html ./"$baseName"/"$baseName".html -t plain -o ./"$baseName"/"$baseName".txt
+
+awk 't;NF==0 {t=1}' ./"$baseName"/"$baseName".txt > tmp && mv tmp ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/\n/@@/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/@@@@/\n/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/@@/ /g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/\[/slnc 400/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/\]/slnc 400/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/slnc 400/[[slnc 400]]\n/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/\n/slnc 200\n/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/slnc 200/[[slnc 200]]/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/\[\[slnc 400\]\]\[\[slnc 200\]\]/[[slnc 400]]/g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/^\[\[slnc 200\]\]//g' ./"$baseName"/"$baseName".txt
+
+perl -pi -e 's/^\[\[slnc 400\]\]//g' ./"$baseName"/"$baseName".txt
+
+say -f ./"$baseName"/"$baseName".txt -o ./"$baseName"/"$baseName".aiff 2> /dev/null
+
+lame -m m ./"$baseName"/"$baseName".aiff ./"$baseName"/"$baseName".mp3 2> /dev/null
+
+#perl -pi -e 's/\n/ /g' ./"$baseName"/"$baseName".txt
+
+perl /Users/"$USER"/scripts/sentence-boundary-original.pl -d /Users/"$USER"/scripts/HONORIFICS -i ./"$baseName"/"$baseName".txt -o ./"$baseName"/"$baseName"_segmented.txt
+
+perl -pi -e 's/\[\[slnc 200\]\] /\n/g' ./"$baseName"/"$baseName"_segmented.txt
+
+perl -pi -e 's/\[\[slnc 400\]\] /\n/g' ./"$baseName"/"$baseName"_segmented.txt
+
+perl -pi -e 's/\[\[slnc 200\]\]//g' ./"$baseName"/"$baseName"_segmented.txt
+
+perl -pi -e 's/\[\[slnc 400\]\]//g' ./"$baseName"/"$baseName"_segmented.txt
+
+#perl -pi -e 's/\\\[.*\\\]/ /g' ./"$baseName"/"$baseName"_segmented.txt
+
+rm ./"$baseName"/"$baseName".txt
+
+#mv ./"$baseName"/"$baseName"_segmented.txt ./"$baseName"/"$baseName".txt
+
+perl -0777 -pi -e 's/(\n)(\n)/$1/g' ./"$baseName"/"$baseName"_segmented.txt
+
+fold -w 35 -s ./"$baseName"/"$baseName"_segmented.txt > tmp && mv tmp ./"$baseName"/"$baseName".txt
+
+perl -00 -pi -le 's/,*\n.*\n/$&\n/mg' ./"$baseName"/"$baseName".txt
+
+sed -i '' 's/  */ /g' ./"$baseName"/"$baseName".txt
+
+sed -i '' 's/  */ /g' ./"$baseName"/"$baseName".txt
+
+sed -i '' 's/ \./\./g' ./"$baseName"/"$baseName".txt
+
+sed -i '' 's/ ,/,/g' ./"$baseName"/"$baseName".txt
+
+sed -i '' 's/^ //g' ./"$baseName"/"$baseName".txt
+
+aeneas_execute_task ./"$baseName"/"$baseName".mp3 ./"$baseName"/"$baseName".txt "task_language=eng|is_text_type=plain|os_task_file_format=vtt" ./"$baseName"/"$baseName".vtt >/dev/null 2>&1
+
+rm ./"$baseName"/"$baseName".txt 
+
+rm ./"$baseName"/"$baseName".aiff
+
+rm ./"$baseName"/"$baseName"_segmented.txt 
+
+fi
+
+###
+
 # Create folder in Canvas
 
 if [ -n "$upload" ]; then
@@ -4129,6 +4343,26 @@ canvas_path=`cat ./"$baseName"/canvas_path.txt`
  
 curl -sS $canvas_path -F "filename=$baseName.html" -F "file=@./$baseName/$baseName.html" > /dev/null
 
+if [ -n "$audio" ]; then
+
+# Get path to MP3
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$baseName.mp3" -F 'content_type=audio/mpeg' -F "parent_folder_path=$canvas_path_name" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt
+
+# Upload Mp3 file to Canvas Files Area
+ 
+curl -sS $canvas_path -F "filename=$baseName.mp3" -F "file=@./$baseName/$baseName.mp3" > /dev/null
+
+# Get path to VTT
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$baseName.vtt" -F 'content_type=text/vtt' -F "parent_folder_path=$canvas_path_name" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt
+
+# Upload Mp3 file to Canvas Files Area
+ 
+curl -sS $canvas_path -F "filename=$baseName.vtt" -F "file=@./$baseName/$baseName.vtt" > /dev/null
+
+fi
+
 fi
 
 # Upload HTML to Course Page
@@ -4140,6 +4374,8 @@ cp ./"$baseName"/"$baseName".html ./"$baseName"/"$baseName"_copy.html
 awk '/<body>/{p=1;next}{if(p){print}}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
 
 awk '/<footer>/ {exit} {print}' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+#
 
 perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
 
@@ -4307,11 +4543,84 @@ awk '
 
 sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName"_copy.html
 
+if [ -n "$audio" ]; then
+
+if [ ! -f ./"$baseName"/new_canvas_folder.txt ]; then
+
+curl  -sS https://$canvas_domain/api/v1/courses/$class_number/folders -F "name=$baseName" -H 'Authorization: Bearer '$token'' | sed 's/.*"id"://' | sed 's/,.*//g' > ./"$baseName"/new_canvas_folder.txt
+
+# Assign NEW Folder ID as variable
+
+new_canvas_folder=`cat ./"$baseName"/new_canvas_folder.txt`
+
+fi
+
+for x in ./"$baseName"/"$baseName".mp3; do
+        basePath=${x%}
+        Name=${basePath##*/}
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$Name" -F 'content_type=audio/mpeg' -F "parent_folder_id=$new_canvas_folder" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt
+
+canvas_path=`cat ./"$baseName"/canvas_path.txt`
+
+# Upload Mp3 file to Canvas Files Area
+ 
+curl -sS $canvas_path -F 'content_type=audio/mpeg' -F "filename=$Name" -F "file=@./$baseName/$Name" > /dev/null
+
+done
+
+for x in ./"$baseName"/"$baseName".vtt; do
+        basePath=${x%}
+        Name=${basePath##*/}
+
+# Get path to VTT
+
+curl -sS https://$canvas_domain/api/v1/courses/$class_number/files -F "name=$Name" -F 'content_type=text/vtt' -F "parent_folder_id=$new_canvas_folder" -H 'Authorization: Bearer '$token'' | sed 's/.*url":"//g' | sed 's/","upload.*//g' > ./"$baseName"/canvas_path.txt
+
+# Upload VTT file to Canvas Files Area
+ 
+curl -sS $canvas_path -F 'content_type=text/vtt' -F "filename=$Name" -F "file=@./$baseName/$Name" > /dev/null
+
+done
+
+curl -sS https://$canvas_domain/api/v1/folders/$new_canvas_folder/files\?exclude_content_types=image -H 'Authorization: Bearer '$token'' > ./"$baseName"/canvas_audio.txt
+
+perl -pi -e 's/https:\/\/'$canvas_domain'\/files\//\n@@ https:\/\/'$canvas_domain'\/files\//g' ./"$baseName"/canvas_audio.txt
+
+perl -pi -e 's/(\d+)(\/download?.*)/$1\/download" data-api-endpoint="https:\/\/'$canvas_domain'\/api\/v1\/courses\/'$class_number'\/files\/$1" data-api-returntype="File"/g' ./"$baseName"/canvas_audio.txt
+
+perl -pi -e 's/\[\{"id".*\n//g' ./"$baseName"/canvas_audio.txt
+
+perl -pi -e 's/\\//g' ./"$baseName"/canvas_audio.txt
+
+sed -i '' '2,$d' ./"$baseName"/canvas_audio.txt
+
+sed -i '' 's/@@ /@@ <p><audio controls="controls"><source src="/g' ./"$baseName"/canvas_audio.txt
+
+sed -i '' 's/File"/File" type="audio\/mpeg" \/><\/audio><\/p>/g' ./"$baseName"/canvas_audio.txt
+
+rm ./"$baseName"/new_canvas_folder.txt
+
+mv ./"$baseName"/canvas_audio.txt ./
+
+# rm ./"$baseName"/canvas_audio.txt
+
+perl -pi -e 's/<main>/<main>\n@@\n/g' ./"$baseName"/"$baseName"_copy.html
+
+awk '
+    /^@@/{                   
+        getline <"./canvas_audio.txt"
+    }
+    1                      
+    ' ./"$baseName"/"$baseName"_copy.html > tmp && mv tmp ./"$baseName"/"$baseName"_copy.html
+
+sed -i '' -e 's/@@ //g' ./"$baseName"/"$baseName"_copy.html
+
+fi
+
 perl -pi -e 's/\n//g' ./"$baseName"/"$baseName"_copy.html
 
 rm ./display-log.txt
-
-#
 
 sed -i '' '1s/^/wiki_page[body]=/' ./"$baseName"/"$baseName"_copy.html
 
