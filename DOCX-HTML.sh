@@ -2246,7 +2246,7 @@ perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
 
 # NEW
 
-perl -pi -e 's/&gt;/\\lt/g' ./display-log.txt
+perl -pi -e 's/&gt;/\\gt/g' ./display-log.txt
 
 #
 
