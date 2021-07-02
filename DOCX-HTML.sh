@@ -1809,6 +1809,12 @@ perl -0777 -pi -e 's/(<blockquote>)(\n<\/aside>\n)(<\/blockquote>)//g' ./"$baseN
 		
 perl -0777 -pi -e 's/(src=".*)(\\media\\)/src=".\/media\//g' ./"$baseName"/"$baseName".html
 
+# NEW 1.8.0
+
+perl -0777 -pi -e 's/(src=".*)(\\media)/src=".\/media/g' ./"$baseName"/"$baseName".html
+
+#
+
 # Fix Incorrect Figure Formatting (<figure role="group"> before <figure>)
 
 perl -0777 -pi -e 's/(<figure role="group">)(\n)(<figure>)/$1/g'  ./"$baseName"/"$baseName".html
