@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.8.0
+# Version 1.8.1
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -33,7 +33,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.8.0\n"
+    printf "\nVersion 1.8.1\n"
 
 return 0
 }
@@ -782,12 +782,25 @@ sed -i 's/\$\$\$/<span class="dotted">/g' ./"$baseName"/"$baseName".html
 sed -i 's/\^\^\^/<span class="dashed">/g' ./"$baseName"/"$baseName".html
 		
 # Perform Find and Replace in HTML for text that has double underline formatting (+++)
+
+# New
 		
-# sed -i 's/+++/<span class="doubleunderline">/g' ./"$baseName"/"$baseName".html
+#sed -i 's/+++/<span class="doubleunderline">/g' ./"$baseName"/"$baseName".html
+sed -i 's/+~\^/<span class="doubleunderline">/g' ./"$baseName"/"$baseName".html
+
+#
 		
 # Perform Find and Replace in HTML for text that has highlight formatting (~~~)
 		
 sed -i 's/~~~/<mark>/g' ./"$baseName"/"$baseName".html
+
+# New in 1.8.1
+
+# Find and replace for closing span
+
+sed -i 's/%%%/<\/span>/g' ./"$baseName"/"$baseName".html
+
+#
 		
 # Perform Find and Replace in HTML for text that has closing tag for highlight formatting (***)
 		
@@ -1585,6 +1598,8 @@ sed -i 's/###1/<span lang="'"$language1"'" xml:lang="'"$language1"'" class="lang
 # Add closing </span> tags for text areas where the secondary language ends in the middle of the paragraph.
 	
 sed -i 's/%%%/<\/span>/g' ./"$baseName"/"$baseName".html
+
+#perl -p -e 's/%%%/<\/span>/g' ./"$baseName"/"$baseName".html
 		
 # Clean Up order of closing </span> tags when the secondary language text also includes formatting.
 
@@ -2930,6 +2945,12 @@ sed -i '/^\s*$/d' ./display-log.txt
 # Remove comma within equations
 
 perl -pi -e 's/&lt;/\\lt/g' ./display-log.txt
+
+# NEW
+
+perl -pi -e 's/&gt;/\\gt/g' ./display-log.txt
+
+#
 
 perl -pi -e 's/\\&amp;/\\ & /g' ./display-log.txt
 
