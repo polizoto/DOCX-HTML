@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.8.1
+# Version 1.8.2
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -33,7 +33,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.8.1\n"
+    printf "\nVersion 1.8.2\n"
 
 return 0
 }
@@ -135,6 +135,22 @@ done
 if [ -n "$diagnostics" ]; then
 
 USER=$(whoami)
+
+#### New in 1.8.2
+
+if [[ $USER == WIN+* ]]; then
+
+echo -e "$USER" | sed 's/WIN+//g' > ./user.txt
+
+USER=`cat ./user.txt`
+
+echo -e "$USER"
+
+rm ./user.txt
+
+fi
+
+####
 
 if  command -v git >/dev/null  2>&1; then 
 
@@ -753,6 +769,3723 @@ sed -i 's/ type="text\/css"//g' ./"$baseName"/"$baseName".html
 # Clean up Path to Images
 
 perl -0777 -pi -e 's/<img\ src=".*\\media\\/<img\ src=".\/media\//g' ./"$baseName"/"$baseName".html
+
+# Check if there are language equations and prompt user to turn on language switch
+
+if [[ "$language" == "" ]]; then 
+
+if grep -q '###1' ./"$baseName"/"$baseName".html ; then
+
+while true; do
+
+echo -e "\n\033[1;33mATTENTION:\033[0m It looks like there is a secondary language in \033[1;35m"$baseName".docx\033[0m.\n"
+
+read -n1 -p "Do you wish to process secondary languages [Y/N]?" answer
+case $answer in
+Y | y) 
+       echo -e "\n"
+	   language=on
+	   break	
+	   ;;
+N | n) 
+		echo -e "\n"
+		language=off
+		echo -e "\033[1;33mATTENTION:\033[0m Secondary language tags will be removed from \033[1;32m"$baseName".html\033[0m."
+		break
+		;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ y / n ].\033[0m\n"
+       ;;
+	   
+esac
+
+done
+
+fi
+
+fi
+
+if [[ "$language" == "off" ]]; then 
+
+		sed -i 's/\(###1\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###2\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###3\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###4\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###5\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###6\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###7\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###8\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+		sed -i 's/\(###9\)\([^%%%]*\)\(%%%\)/\2/g' ./"$baseName"/"$baseName".html
+
+fi
+
+if [[ "$language" == "on" ]]; then 
+
+if 	grep -q '###1' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language1" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 1st secondary language tag \033[1;45m\033[1;39m(###1)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language1=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage1="Italian"
+       break
+	   ;;
+DE | de) 
+	   language1=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language1=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language1=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language1=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage1="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language1=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language1=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language1=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language1=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language1=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language1=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language1=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language1=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language1=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language1=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language1=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language1=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language1=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language1=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language1=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language1=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language1=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language1=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language1=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language1=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language1=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language1=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language1=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language1=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language1=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language1=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language1=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language1=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language1=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language1=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language1=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language1=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language1=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language1=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language1=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language1=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language1=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language1=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language1=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language1=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language1=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language1=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language1=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language1=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language1=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language1=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language1=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language1=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language1=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language1=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###1\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage1="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###2' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language2" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###2)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language2=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage2="Italian"
+       break
+	   ;;
+DE | de) 
+	   language2=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language2=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language2=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language2=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage2="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language2=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language2=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language2=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language2=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language2=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language2=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language2=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language2=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language2=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language2=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language2=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language2=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language2=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language2=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language2=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language2=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language2=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language2=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language2=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language2=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language2=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language2=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language2=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language2=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language2=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language2=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language2=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language2=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language2=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language2=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language2=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language2=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language2=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language2=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language2=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language2=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language2=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language2=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language2=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language2=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language2=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language2=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language2=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language2=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language2=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language2=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language2=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language2=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language2=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language2=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###2\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage2="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###3' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language3" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 3rd secondary language tag \033[1;45m\033[1;39m(###3)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language3=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage3="Italian"
+       break
+	   ;;
+DE | de) 
+	   language3=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language3=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language3=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language3=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage3="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language3=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language3=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language3=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language3=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language3=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language3=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language3=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language3=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language3=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language3=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language3=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language3=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language3=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language3=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language3=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language3=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language3=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language3=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language3=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language3=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language3=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language3=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language3=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language3=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language3=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language3=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language3=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language3=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language3=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language3=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language3=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language3=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language3=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language3=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language3=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language3=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language3=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language3=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language3=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language3=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language3=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language3=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language3=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language3=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language3=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language3=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language3=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language3=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language3=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language3=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###3\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage3="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###4' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language4" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###4)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language4=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage4="Italian"
+       break
+	   ;;
+DE | de) 
+	   language4=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language4=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language4=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language4=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage4="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language4=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language4=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language4=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language4=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language4=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language4=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language4=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language4=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language4=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language4=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language4=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language4=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language4=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language4=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language4=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language4=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language4=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language4=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language4=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language4=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language4=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language4=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language4=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language4=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language4=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language4=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language4=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language4=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language4=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language4=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language4=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language4=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language4=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language4=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language4=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language4=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language4=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language4=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language4=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language4=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language4=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language4=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language4=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language4=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language4=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language4=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language4=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language4=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language4=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language4=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###4\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage4="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###5' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language5" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###5)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language5=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage5="Italian"
+       break
+	   ;;
+DE | de) 
+	   language5=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language5=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language5=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language5=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage5="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language5=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language5=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language5=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language5=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language5=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language5=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language5=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language5=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language5=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language5=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language5=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language5=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language5=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language5=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language5=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language5=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language5=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language5=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language5=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language5=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language5=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language5=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language5=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language5=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language5=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language5=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language5=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language5=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language5=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language5=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language5=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language5=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language5=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language5=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language5=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language5=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language5=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language5=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language5=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language5=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language5=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language5=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language5=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language5=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language5=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language5=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language5=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language5=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language5=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language5=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###5\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage5="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###6' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language6" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###6)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language6=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage6="Italian"
+       break
+	   ;;
+DE | de) 
+	   language6=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language6=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language6=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language6=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage6="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language6=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language6=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language6=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language6=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language6=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language6=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language6=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language6=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language6=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language6=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language6=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language6=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language6=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language6=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language6=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language6=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language6=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language6=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language6=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language6=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language6=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language6=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language6=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language6=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language6=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language6=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language6=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language6=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language6=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language6=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language6=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language6=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language6=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language6=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language6=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language6=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language6=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language6=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language6=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language6=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language6=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language6=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language6=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language6=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language6=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language6=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language6=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language6=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language6=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language6=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###6\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage6="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###7' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language7" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###7)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language7=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage7="Italian"
+       break
+	   ;;
+DE | de) 
+	   language7=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language7=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language7=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language7=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage7="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language7=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language7=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language7=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language7=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language7=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language7=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language7=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language7=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language7=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language7=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language7=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language7=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language7=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language7=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language7=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language7=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language7=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language7=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language7=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language7=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language7=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language7=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language7=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language7=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language7=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language7=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language7=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language7=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language7=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language7=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language7=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language7=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language7=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language7=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language7=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language7=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language7=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language7=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language7=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language7=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language7=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language7=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language7=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language7=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language7=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language7=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language7=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language7=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language7=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language7=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###7\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage7="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###8' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language8" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###8)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language8=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage8="Italian"
+       break
+	   ;;
+DE | de) 
+	   language8=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language8=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language8=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language8=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage8="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language8=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language8=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language8=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language8=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language8=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language8=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language8=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language8=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language8=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language8=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language8=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language8=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language8=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language8=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language8=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language8=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language8=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language8=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language8=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language8=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language8=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language8=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language8=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language8=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language8=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language8=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language8=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language8=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language8=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language8=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language8=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language8=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language8=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language8=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language8=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language8=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language8=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language8=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language8=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language8=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language8=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language8=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language8=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language8=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language8=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language8=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language8=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language8=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language8=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language8=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###8\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage8="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+if 	grep -q '###9' ./"$baseName"/"$baseName".html ; then
+
+if [[ "$language9" == "" ]]; then 
+    
+echo -e "\033[1;33mATTENTION:\033[0m The 2nd secondary language tag \033[1;45m\033[1;39m(###9)\033[0m\033[0m in \033[1;35m"$baseName".docx\033[0m hasn't been assigned a value.\n"
+
+while true; do
+
+read -n5 -p "Please enter the two letter value to assign to this secondary language in $(echo -e "\033[1;35m"$baseName".html\033[0m") [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw / rm (REMOVE) ]." answer
+case "$answer" in
+IT | it) 
+	   language9=it	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"it"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage9="Italian"
+       break
+	   ;;
+DE | de) 
+	   language9=de	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="German - Germany"
+	   break
+	   ;;
+ES | es) 
+	   language9=es	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Spanish - Spain"
+	   break
+	   ;;
+FR | fr) 
+	   language9=fr	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="French - France"
+	   break
+	   ;;
+JA | ja) 
+	   language9=ja	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ja"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+	   secondlanguage9="Japanese"
+	   break
+	   ;;
+EN-US | en-us) 
+	   language9=en-us	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-us"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - American"
+	   break
+	   ;;
+EN-GB | en-gb) 
+	   language9=en-gb	
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-gb"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - British"
+	   break
+	   ;;
+ZH-CN | zh-cn) 
+	   language9=zh-cn
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-cn"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Chinese - China"
+	   break
+	   ;;
+RU | ru) 
+	   language9=ru
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ru"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Russian"
+	   break
+	   ;;
+PT | pt) 
+	   language9=pt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Portuguese - Portugal"
+	   break
+	   ;;
+PL | pl) 
+	   language9=pl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Polish"
+	   break
+	   ;;
+ES-MX | es-mx) 
+	   language9=es-mx
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"es-mx"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Spanish - Mexico"
+	   break
+	   ;;
+ZH-HK | zh-hk) 
+	   language9=zh-hk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-hk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Chinese - Hong Kong"
+	   break
+	   ;;
+LA | la) 
+	   language9=la
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"la"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Latin"
+	   break
+	   ;;
+AF | af) 
+	   language9=af
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"af"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Afrikaans"
+	   break
+	   ;;
+AR-SA | ar-sa) 
+	   language9=ar-sa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-sa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Arabic - Saudi Arabia"
+	   break
+	   ;;
+AR-EG | ar-eg) 
+	   language9=ar-eg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ar-eg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Arabic - Egypt"
+	   break
+	   ;;
+BG | bg) 
+	   language9=bg
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"bg"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Bulgarian"
+	   break
+	   ;;
+CA | ca) 
+	   language9=ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Catalan"
+	   break
+	   ;;
+CS | cs) 
+	   language9=cs
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"cs"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Czech"
+	   break
+	   ;;
+DA | da) 
+	   language9=da
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"da"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Danish"
+	   break
+	   ;;
+DE-AT | de-at) 
+	   language9=de-at
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-at"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="German - Austria"
+	   break
+	   ;;
+DE-CH | de-ch) 
+	   language9=de-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"de-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="German - Switzerland"
+	   break
+	   ;;
+EL | el) 
+	   language9=el
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"el"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Greek"
+	   break
+	   ;;
+EN-AU | en-au) 
+	   language9=en-au
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-au"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - Australia"
+	   break
+	   ;;
+EN-CA | en-ca) 
+	   language9=en-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - Canada"
+	   break
+	   ;;
+EN-IN | en-in) 
+	   language9=en-in
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-in"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - India"
+	   break
+	   ;;
+EN-IE | en-ie) 
+	   language9=en-ie
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"en-ie"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="English - Ireland"
+	   break
+	   ;;
+ET | et) 
+	   language9=et
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"et"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Estonian"
+	   break
+	   ;;
+FA | fa) 
+	   language9=fa
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fa"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Farsi"
+	   break
+	   ;;
+FI | fi) 
+	   language9=fi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Finnish"
+	   break
+	   ;;
+FR-CA | fr-ca) 
+	   language9=fr-ca
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ca"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="French - Canada"
+	   break
+	   ;;
+FR-CH | fr-ch) 
+	   language9=fr-ch
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"fr-ch"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="French - Switzerland"
+	   break
+	   ;;
+GRC | grc) 
+	   language9=grc
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"grc"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Ancient Greek"
+	   break
+	   ;;
+HE | he) 
+	   language9=he
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"he"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Hebrew"
+	   break
+	   ;;
+HI | hi) 
+	   language9=hi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Hindi"
+	   break
+	   ;;
+HR | hr) 
+	   language9=hr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Croatian"
+	   break
+	   ;;
+HU | hu) 
+	   language9=hu
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"hu"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Hungarian"
+	   break
+	   ;;
+ID | id) 
+	   language9=id
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"id"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Indonesian"
+	   break
+	   ;;
+KO | ko) 
+	   language9=ko
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ko"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Korean"
+	   break
+	   ;;
+LT | lt) 
+	   language9=lt
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"lt"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Lithuanian"
+	   break
+	   ;;
+MS | ms) 
+	   language9=ms
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ms"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Malaysian"
+	   break
+	   ;;
+NL | nl) 
+	   language9=nl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Dutch - Netherlands"
+	   break
+	   ;;
+NL-BE | nl-be) 
+	   language9=nl-be
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"nl-be"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Dutch - Netherlands"
+	   break
+	   ;;
+NO | no) 
+	   language9=no
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"no"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Norwegian"
+	   break
+	   ;;
+PT-BR | pt-br) 
+	   language9=pt-br
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"pt-br"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Portuguese - Brazil"
+	   break
+	   ;;
+RO | ro) 
+	   language9=ro
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ro"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Romanian"
+	   break
+	   ;;
+SK | sk) 
+	   language9=sk
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sk"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Slovak"
+	   break
+	   ;;
+SL | sl) 
+	   language9=sl
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sl"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Slovenian"
+	   break
+	   ;;
+SV | sv) 
+	   language9=sv
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"sv"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Swedish"
+	   break
+	   ;;
+TA | ta) 
+	   language9=ta
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"ta"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Tamil"
+	   break
+	   ;;
+TH | th) 
+	   language9=th
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"th"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Thai"
+	   break
+	   ;;
+TR | tr) 
+	   language9=tr
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"tr"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Turkish"
+	   break
+	   ;;
+VI | vi) 
+	   language9=vi
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"vi"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Vietnamese"
+	   break
+	   ;;
+ZH-TW | zh-tw) 
+	   language9=zh-tw
+       echo -e "\n"
+       echo -e "Value of \033[1;45m\033[1;39m"zh-tw"\033[0m\033[0m assigned to \033[1;45m\033[1;39m###9\033[0m\033[0m in \033[1;35m"$baseName".html\033[0m.\n"
+       secondlanguage9="Chinese - Taiwan"
+	   break
+	   ;;
+	*)
+	   echo -e "\n"
+       echo -e "\033[1;31mError: Invalid entry\033[0m "$answer". \033[1;31mYou must enter one of the following values: [ af / ar-sa / ar-eg / bg / ca / cs / da / de / de-at / de-ch / el / en-au / en-ca / en-gb / en-in / en-ie / en-us / es / es-mx / et / fa / fi / fr / fr-ca / fr-ch / grc / he / hi / hr / hu / id / it / ja / ko / la / lt / ms / nl / nl-be / no / pl / pt / pt-br / ro / ru / sk / sl / sv / ta / th / tr / vi / zh-cn / zh-hk / zh-tw ].\033[0m\n"
+       ;;
+esac
+
+done
+
+fi
+
+fi
+
+fi
  
 echo -ne '\n#######                    \033[1;33m(33%)\033[0m\r'
 sleep 1 
@@ -1027,6 +4760,22 @@ perl -0777 -pi -e 's/<p>Secondary Text Begin:<\/p>/<aside role="complementary" c
 perl -0777 -pi -e 's/<p><strong>Secondary Text Begin:<\/strong><\/p>/<aside role="complementary" class="complimentary">\n<p>Secondary Text Begin:<\/p>/g' ./"$baseName"/"$baseName".html
     
 # Table Markup
+
+# Added to adjust to Pandoc 2.14 update
+
+sed -i 's/<table style="width:100%;">/<table>/g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/<colgroup>.*\n//g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/<\/colgroup>.*\n//g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/<col style.*\n//g' ./"$baseName"/"$baseName".html
+
+sed -i 's/ rowspan=[^>]*>/>/g' ./"$baseName"/"$baseName".html
+
+sed -i 's/ colspan=[^>]*>/>/g' ./"$baseName"/"$baseName".html
+
+#
 
 # Remove <tbody> when it immediately follows <table> (Table header not marked in MS Word)
 
@@ -2079,6 +5828,22 @@ perl -0777 -pi -e 's/(<br>\n)(<p>)(<sup>)([0-9]+)(<\/sup>)/$1$2$4/g' ./"$baseNam
 
 perl -0777 -pi -e 's/(<br>\n)(<p>)([0-9]+)([A-Za-z])/$1$2$3 $4/g' ./"$baseName"/"$baseName".html
 
+# Daggers new in 1.8.2
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(<sup>)(†+)(<\/sup>)/$1$2$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(†+)([A-Za-z])/$1$2$3 $4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(<sup>)(‡+)(<\/sup>)/$1$2$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(‡+)([A-Za-z])/$1$2$3 $4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(<sup>)(°)(<\/sup>)/$1$2$4/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(°)([A-Za-z])/$1$2$3 $4/g' ./"$baseName"/"$baseName".html
+
+#
+
 # Account for footnotes that may already be in the MS Word document
 
 sed -i 's/noteref"><sup>/noteref"><sup >/g'  ./"$baseName"/"$baseName".html 
@@ -2098,6 +5863,30 @@ perl -0777 -pi -e 's/(<br>\n)(<p>)([0-9]+)(\.)/$1<p id="$3-#referent#-referent">
 # Add hyperlink for footnote references followed by a space in footnote region.
 
 perl -0777 -pi -e 's/(<br>\n)(<p>)([0-9]+)( )/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3<\/a> /g' ./"$baseName"/"$baseName".html
+
+#
+
+# Daggers 1.8.2
+
+perl -pi -e 's/(<sup>)(†+)(<\/sup>)/<a id="$2-#footnote#-footnote" href="#$2-%footnote%-referent" class="footnote" role="doc-noteref">$1$2$3<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(†+)(\.)/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3$4<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(†+)( )/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3<\/a> /g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/(<sup>)(‡+)(<\/sup>)/<a id="$2-#footnote#-footnote" href="#$2-%footnote%-referent" class="footnote" role="doc-noteref">$1$2$3<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(‡+)(\.)/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3$4<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(‡+)( )/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3<\/a> /g' ./"$baseName"/"$baseName".html
+
+perl -pi -e 's/(<sup>)(°)(<\/sup>)/<a id="$2-#footnote#-footnote" href="#$2-%footnote%-referent" class="footnote" role="doc-noteref">$1$2$3<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(°)(\.)/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3$4<\/a>/g' ./"$baseName"/"$baseName".html
+
+perl -0777 -pi -e 's/(<br>\n)(<p>)(°)( )/$1<p id="$3-#referent#-referent"><a href="#$3-%referent%-footnote" aria-label="footnote $3" role="doc-backlink" class="footnote" title="Go to note reference">$3<\/a> /g' ./"$baseName"/"$baseName".html
+
+#
 
 # Remove hyperlinks that were incorrectly created for superscripted numbers in the TOC
 
