@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.8.2
+# Version 1.8.3
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -33,7 +33,7 @@ return 0
 }
 
 function version (){
-    printf "\nVersion 1.8.2\n"
+    printf "\nVersion 1.8.3\n"
 
 return 0
 }
@@ -4504,7 +4504,7 @@ sed -i 's/<nav id="TOC" role="doc-toc">/<nav id="TOC">/g' ./"$baseName"/"$baseNa
            
 # Add an ARIA landmark in the document <footer> and add text about how to get in touch with the Alternative Media Unit of DSP.
 		
-perl -0777 -pi -e  "s/<\/main>\n/<\/main>\n<footer>\n<p role=\"contentinfo\">This document was created by the Alternative Media Unit of the Disabled Students' Program at UC Berkeley. For questions or concerns about this document, please contact us at dspamc@berkeley.edu.<\/p>\n<\/footer>\n/g" ./"$baseName"/"$baseName".html
+perl -0777 -pi -e  "s/<\/main>\n/<\/main>\n<footer>\n<p role=\"contentinfo\">This document was created by the Alternative Media Unit of the Disabled Students' Program at UC Berkeley. For questions or concerns about this document, please contact us at dspamc\@berkeley.edu.<\/p>\n<\/footer>\n/g" ./"$baseName"/"$baseName".html
         
 # Perform Find and Replace in HTML for text that has dotted underline formatting ($$$)
 	
@@ -5793,6 +5793,12 @@ sed -i 's/_edited<\/title>/<\/title>/g' ./"$baseName"/"$baseName".html
 sed -i 's/\\begin{bmatrix}<\/p>/\\begin{bmatrix}/g' ./"$baseName"/"$baseName".html
 
 sed -i 's/\\begin{matrix}<\/p>/\\begin{matrix}/g' ./"$baseName"/"$baseName".html
+
+# New with 1.8.3
+
+sed -i 's/\\begin{pmatrix}<\/p>/\\begin{pmatrix}/g' ./"$baseName"/"$baseName".html
+
+#
 
 #
 
