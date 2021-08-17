@@ -2,7 +2,7 @@
 # Joseph Polizzotto
 # UC Berkeley
 # 510-642-0329
-# Version 1.8.3
+# Version 1.8.4
 # Instructions: 1) From a directory containing DOCX file(s) to convert, open a Terminal window and enter the path to the script. 2) Enter any desired options (see Help menu -h) 3) Press ENTER.
 # This script is designed to run on a Windows 10 (PC) device
  
@@ -7382,6 +7382,12 @@ perl -0777 -pi -e 's/(\n)(title=".*")/ $2/g' ./"$baseName"/"$baseName".html
 sed -i 's/<figure> <svg/<p><svg/g' ./"$baseName"/"$baseName".html
 
 sed -i 's/<\/svg><\/figure>/<\/svg><\/p>/g' ./"$baseName"/"$baseName".html
+
+## New in 1.8.4
+
+sed -zi 's/\(<img.*\)\( <svg\)/\n<svg/g'  ./"$baseName"/"$baseName".html
+
+#
 
 fi
 
